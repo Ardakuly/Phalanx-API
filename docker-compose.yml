@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  phalanx-db:
+    image: postgres:16
+    container_name: phalanx-db
+    environment:
+      POSTGRES_DB: phalanx
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - phalanx-volume:/var/lib/postgresql/data
+
+  phalanx-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: phalanx
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://phalanx-db:5432/phalanx
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin
+    depends_on:
+      - phalanx-db
+
+volumes:
+  phalanx-volume:
