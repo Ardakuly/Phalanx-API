@@ -37,7 +37,7 @@ public class ProductAdminController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/remove/{externalId}")
+    @DeleteMapping("/remove/{externalId}")
     @Operation(summary = "Remove the product", description = "Post request to remove the product")
     public ResponseEntity<Void> remove(@PathVariable("externalId") String externalId) {
         productService.deleteProduct(externalId);
