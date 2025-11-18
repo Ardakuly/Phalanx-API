@@ -4,8 +4,6 @@ import com.backbone.phalanx.product.dto.ProductFilterRequestDto;
 import com.backbone.phalanx.product.dto.ProductFilterResponseDto;
 import com.backbone.phalanx.product.dto.ProductRequestDto;
 
-import java.math.BigDecimal;
-
 public interface ProductService {
 
     /**
