@@ -1,8 +1,8 @@
 package com.backbone.phalanx.product.service;
 
-import com.backbone.phalanx.product.dto.ProductFilterRequestDto;
-import com.backbone.phalanx.product.dto.ProductFilterResponseDto;
-import com.backbone.phalanx.product.dto.ProductRequestDto;
+import com.backbone.phalanx.product.dto.*;
+
+import java.util.List;
 
 public interface ProductService {
 
@@ -16,6 +16,16 @@ public interface ProductService {
      *         along with pagination information such as total pages, total elements, and current page.
      */
     ProductFilterResponseDto getAllProductsByFiltering(ProductFilterRequestDto productFilterRequestDto);
+
+    /**
+     * Retrieves the product details for the given barcode.
+     *
+     * @param barcode the unique identifier of the product in barcode format
+     * @return a data transfer object containing the product details, including
+     *         external ID, name, SKU, barcode, unit, category, prices, stock balance,
+     *         photo URL, and timestamps for creation and update
+     */
+    ProductResponseDto getProductByBarcode(String barcode);
 
     /**
      * Creates a new product based on the provided product data.
@@ -41,4 +51,14 @@ public interface ProductService {
      * @param externalId the unique identifier of the product to be deleted
      */
     void deleteProduct(String externalId);
+
+    /**
+     * Processes the sale of a list of products. Each product is identified
+     * by its external ID or barcode and includes the quantity to be sold.
+     *
+     * @param products a list of {@link ProductSellDto} objects representing the products
+     *                 to be sold. Each object includes details such as the product's
+     *                 external ID, barcode, and the quantity being sold.
+     */
+    void sell(List<ProductSellDto> products);
 }

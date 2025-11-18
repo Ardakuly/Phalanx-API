@@ -1,6 +1,7 @@
 package com.backbone.phalanx.exception.handler;
 
 import com.backbone.phalanx.exception.ProductNotFoundException;
+import com.backbone.phalanx.exception.ProductStockBalanceNotSufficient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<?> handleProductNotFound(ProductNotFoundException exception) {
 
-        log.error("EXCEPTION THROWN: {}", exception.getMessage());
+        logException(exception);
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(Map.of("error", exception.getMessage()));
     }
 
+    @ExceptionHandler(ProductStockBalanceNotSufficient.class)
+    public ResponseEntity<?> handleProductNotFound(ProductStockBalanceNotSufficient exception) {
+
+        logException(exception);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
+    private void logException(Exception exception) {
+        log.error("EXCEPTION THROWN: {}", exception.getMessage());
+    }
 }

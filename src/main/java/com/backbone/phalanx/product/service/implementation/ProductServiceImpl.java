@@ -1,9 +1,8 @@
 package com.backbone.phalanx.product.service.implementation;
 
 import com.backbone.phalanx.exception.ProductNotFoundException;
-import com.backbone.phalanx.product.dto.ProductFilterRequestDto;
-import com.backbone.phalanx.product.dto.ProductFilterResponseDto;
-import com.backbone.phalanx.product.dto.ProductRequestDto;
+import com.backbone.phalanx.exception.ProductStockBalanceNotSufficient;
+import com.backbone.phalanx.product.dto.*;
 import com.backbone.phalanx.product.mapper.ProductMapper;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.repository.ProductRepository;
@@ -19,7 +18,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -60,6 +61,13 @@ public class ProductServiceImpl implements ProductService {
         log.info("Filtered response has {} found records.", productFilterResponseDto.totalElements());
 
         return productFilterResponseDto;
+    }
+
+    @Override
+    public ProductResponseDto getProductByBarcode(String barcode) {
+        return productRepository.findByBarcode(barcode).map(productMapper::toDto).orElseThrow(
+                () -> new ProductNotFoundException(barcode)
+        );
     }
 
     @Override
@@ -126,5 +134,35 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteByExternalId(externalId);
 
         log.info("Product deleted with externalId: {}", externalId);
+    }
+
+    @Override
+    public void sell(List<ProductSellDto> products) {
+        products.forEach((product) -> {
+           Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
+                   () -> new ProductNotFoundException(product.externalId())
+           );
+
+           if (productInStock.getStockBalance().subtract(product.quantity()).compareTo(BigDecimal.ZERO) < 0) {
+               throw new ProductStockBalanceNotSufficient(productInStock.getName());
+           }
+        });
+
+        products.forEach((product) -> {
+            Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
+                    () -> new ProductNotFoundException(product.externalId())
+            );
+
+            productInStock.setStockBalance(productInStock.getStockBalance().subtract(product.quantity()));
+            productInStock.setUpdatedAt(LocalDateTime.now());
+
+            log.info(
+                    "Product sold with name: {} and externalId: {}",
+                    productInStock.getName(),
+                    productInStock.getExternalId()
+            );
+        });
+
+        // TODO: Add to transaction table.
     }
 }

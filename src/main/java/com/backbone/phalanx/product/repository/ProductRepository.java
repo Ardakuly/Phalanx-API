@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     Optional<Product> findByExternalId(String externalId);
 
     void deleteByExternalId(String externalId);
+
+    Optional<Product> findByBarcode(String barcode);
 }
