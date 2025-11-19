@@ -1,8 +1,9 @@
 package com.backbone.phalanx.product.service;
 
 import com.backbone.phalanx.product.dto.*;
+import com.backbone.phalanx.product.model.Product;
 
-import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
 
@@ -34,7 +35,8 @@ public interface ProductService {
      *                          It includes information such as the external ID, name, SKU, barcode, unit,
      *                          category, purchased price, selling price, stock balance, and photo URL.
      */
-    void createProduct(ProductRequestDto productRequestDto);
+    // TODO: Regenerate information
+    Product createProduct(ProductRequestDto productRequestDto);
 
     /**
      * Updates an existing product based on the provided product data.
@@ -60,5 +62,6 @@ public interface ProductService {
      *                 to be sold. Each object includes details such as the product's
      *                 external ID, barcode, and the quantity being sold.
      */
-    void sell(List<ProductSellDto> products);
+    // TODO: Regenerate information
+    Map.Entry<ProductSellDto, Product> sell(ProductSellDto products);
 }

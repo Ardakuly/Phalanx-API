@@ -20,13 +20,6 @@ public class ProductAdminController {
 
     private final ProductService productService;
 
-    @PostMapping("/add")
-    @Operation(summary = "Add the product", description = "Post request to add the product")
-    public ResponseEntity<Void> add(@RequestBody ProductRequestDto productRequestDto) {
-        productService.createProduct(productRequestDto);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @PutMapping("/update")
     @Operation(
             summary = "Update information of the product",

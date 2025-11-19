@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -30,7 +30,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-
 
     @Override
     public ProductFilterResponseDto getAllProductsByFiltering(ProductFilterRequestDto productFilterRequestDto) {
@@ -71,7 +70,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void createProduct(ProductRequestDto productRequestDto) {
+    @Transactional
+    public Product createProduct(ProductRequestDto productRequestDto) {
         Product product = productRepository.save(
                 Product.builder()
                         .externalId(UUID.randomUUID().toString())
@@ -90,6 +90,8 @@ public class ProductServiceImpl implements ProductService {
         );
 
         log.info("Product created with name: {} and externalId: {}", product.getName(), product.getExternalId());
+
+        return product;
     }
 
     @Override
@@ -137,32 +139,26 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void sell(List<ProductSellDto> products) {
-        products.forEach((product) -> {
-           Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
-                   () -> new ProductNotFoundException(product.externalId())
-           );
+    @Transactional
+    public Map.Entry<ProductSellDto, Product> sell(ProductSellDto product) {
+       Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
+               () -> new ProductNotFoundException(product.externalId())
+       );
 
-           if (productInStock.getStockBalance().subtract(product.quantity()).compareTo(BigDecimal.ZERO) < 0) {
-               throw new ProductStockBalanceNotSufficient(productInStock.getName());
-           }
-        });
+       if (productInStock.getStockBalance().subtract(product.quantity()).compareTo(BigDecimal.ZERO) < 0) {
+           throw new ProductStockBalanceNotSufficient(productInStock.getName());
+       }
 
-        products.forEach((product) -> {
-            Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
-                    () -> new ProductNotFoundException(product.externalId())
-            );
+        productInStock.setStockBalance(productInStock.getStockBalance().subtract(product.quantity()));
+        productInStock.setUpdatedAt(LocalDateTime.now());
 
-            productInStock.setStockBalance(productInStock.getStockBalance().subtract(product.quantity()));
-            productInStock.setUpdatedAt(LocalDateTime.now());
+        log.info(
+                "Product sold with name: {}, externalId: {} and with quantity: {}",
+                productInStock.getName(),
+                productInStock.getExternalId(),
+                product.quantity()
+        );
 
-            log.info(
-                    "Product sold with name: {} and externalId: {}",
-                    productInStock.getName(),
-                    productInStock.getExternalId()
-            );
-        });
-
-        // TODO: Add to transaction table.
+        return  Map.entry(product, productInStock);
     }
 }
