@@ -1,6 +1,7 @@
 package com.backbone.phalanx.outbound_document.service.implementation;
 
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
+import com.backbone.phalanx.outbound_document.model.OutboundGood;
 import com.backbone.phalanx.outbound_document.repository.OutboundDocumentRepository;
 import com.backbone.phalanx.outbound_document.service.OutboundDocumentService;
 import com.backbone.phalanx.outbound_document.service.OutboundGoodService;
@@ -32,22 +33,23 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
     @Transactional(propagation = REQUIRES_NEW)
     public OutboundDocument createOutboundDocument(List<ProductSellDto> productsSellDtos) {
 
-        Map<ProductSellDto, Product> productSellDtoToProducts = productsSellDtos.stream().map((productSellDto) -> {
-            return productService.sell(productSellDto);
-        }).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        Map<ProductSellDto, Product> productSellDtoToProducts = productsSellDtos.stream().map(
+                productService::sell
+        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        productSellDtoToProducts.entrySet().stream().forEach(
+        List<OutboundGood> outboundGoods = productSellDtoToProducts.entrySet().stream().map(
                 (productSellDtoToProduct) -> {
                     ProductSellDto productSellDto = productSellDtoToProduct.getKey();
                     Product product = productSellDtoToProduct.getValue();
 
-                    outboundGoodService.createOutboundGood(productSellDto, product);
+                    return outboundGoodService.createOutboundGood(productSellDto, product);
                 }
-        );
+        ).toList();
 
         OutboundDocument outboundDocument = OutboundDocument.builder()
                 .externalId(UUID.randomUUID().toString())
                 .documentNumber(UUID.randomUUID().toString())
+                .outboundGoods(outboundGoods)
                 .createdAt(java.time.LocalDateTime.now())
                 .updatedAt(java.time.LocalDateTime.now())
                 .build();

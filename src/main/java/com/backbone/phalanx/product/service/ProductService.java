@@ -29,13 +29,14 @@ public interface ProductService {
     ProductResponseDto getProductByBarcode(String barcode);
 
     /**
-     * Creates a new product based on the provided product data.
+     * Creates a new product entity based on the provided product request data.
      *
-     * @param productRequestDto the data transfer object containing details of the product to be created.
+     * @param productRequestDto the data transfer object containing the details of the product to be created.
      *                          It includes information such as the external ID, name, SKU, barcode, unit,
      *                          category, purchased price, selling price, stock balance, and photo URL.
+     * @return the created Product entity containing all persisted details, including generated fields
+     *         such as ID, createdAt, and updatedAt timestamps.
      */
-    // TODO: Regenerate information
     Product createProduct(ProductRequestDto productRequestDto);
 
     /**
@@ -55,13 +56,12 @@ public interface ProductService {
     void deleteProduct(String externalId);
 
     /**
-     * Processes the sale of a list of products. Each product is identified
-     * by its external ID or barcode and includes the quantity to be sold.
+     * Processes the sale of products based on the provided details and updates the stock balance.
      *
-     * @param products a list of {@link ProductSellDto} objects representing the products
-     *                 to be sold. Each object includes details such as the product's
-     *                 external ID, barcode, and the quantity being sold.
+     * @param products the data transfer object containing the details of the products to be sold,
+     *                 including external ID, barcode, and quantity.
+     * @return a Map.Entry where the key is the ProductSellDto containing the details of the sale,
+     *         and the value is the corresponding Product entity updated with the new stock balance.
      */
-    // TODO: Regenerate information
     Map.Entry<ProductSellDto, Product> sell(ProductSellDto products);
 }

@@ -5,7 +5,11 @@ import com.backbone.phalanx.product.model.Product;
 
 public interface InboundGoodService {
 
-    // TODO: Generate information
+    /**
+     * Creates a new InboundGood entity based on the provided product data.
+     *
+     * @param productInStock the product in stock to be used for creating the inbound good
+     * @return the created InboundGood entity
+     */
     InboundGood createInboundGood(Product productInStock);
-
 }

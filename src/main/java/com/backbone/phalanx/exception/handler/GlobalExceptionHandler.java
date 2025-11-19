@@ -2,6 +2,8 @@ package com.backbone.phalanx.exception.handler;
 
 import com.backbone.phalanx.exception.ProductNotFoundException;
 import com.backbone.phalanx.exception.ProductStockBalanceNotSufficient;
+import com.backbone.phalanx.exception.RefreshTokenIsInvalid;
+import com.backbone.phalanx.exception.UserIsNotEnabled;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,26 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
+    @ExceptionHandler(UserIsNotEnabled.class)
+    public ResponseEntity<?> handleProductNotFound(UserIsNotEnabled exception) {
+
+        logException(exception);
+
+        return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
+    @ExceptionHandler(RefreshTokenIsInvalid.class)
+    public ResponseEntity<?> handleProductNotFound(RefreshTokenIsInvalid exception) {
+
+        logException(exception);
+
+        return ResponseEntity
+                .status(HttpStatus.EXPECTATION_FAILED)
                 .body(Map.of("error", exception.getMessage()));
     }
 

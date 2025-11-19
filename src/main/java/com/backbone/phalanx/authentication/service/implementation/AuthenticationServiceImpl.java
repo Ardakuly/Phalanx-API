@@ -8,6 +8,8 @@ import com.backbone.phalanx.authentication.dto.SignUpRequest;
 import com.backbone.phalanx.authentication.model.User;
 import com.backbone.phalanx.authentication.service.AuthenticationService;
 import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.exception.RefreshTokenIsInvalid;
+import com.backbone.phalanx.exception.UserIsNotEnabled;
 import com.backbone.phalanx.notification.notification.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -71,8 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userService.loadUserByUsername(request.email());
 
         if (!user.isEnabled()) {
-            // TODO: Refactor so that front-end will know user is blocked.
-            throw new RuntimeException(request.email());
+            throw new UserIsNotEnabled(request.email());
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -94,13 +95,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userService.loadUserByUsername(email);
 
         if (!jwtService.isTokenValid(refreshToken, user)) {
-            // TODO: Refactor so that front-end will know invalid refresh token.
-            throw new RuntimeException("Invalid refresh token");
+            throw new RefreshTokenIsInvalid(user.getEmail());
         }
 
         if (!user.isEnabled()) {
-            // TODO: Refactor so that front-end will know user is blocked.
-            throw new RuntimeException(email);
+            throw new UserIsNotEnabled(email);
         }
 
         String newAccessJwt = jwtService.generateToken(user, getCurrentDay());
