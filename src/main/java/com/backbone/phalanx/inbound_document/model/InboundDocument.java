@@ -21,14 +21,18 @@ public class InboundDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "external_id", nullable = false, unique = true)
     private String externalId;
 
+    @Column(name = "document_number", nullable = false, unique = true)
     private String documentNumber;
 
     @OneToMany(mappedBy = "inboundDocument", cascade = CascadeType.ALL)
     private List<InboundGood> inboundGoods;
 
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }

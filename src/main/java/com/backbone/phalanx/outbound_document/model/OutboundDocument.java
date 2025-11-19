@@ -22,14 +22,18 @@ public class OutboundDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "external_id", nullable = false, unique = true)
     private String externalId;
 
+    @Column(name = "document_number", nullable = false, unique = true)
     private String documentNumber;
 
     @OneToMany(mappedBy = "outboundDocument", cascade = CascadeType.REMOVE)
     private List<OutboundGood> outboundGoods;
 
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }
