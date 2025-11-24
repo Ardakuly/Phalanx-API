@@ -4,10 +4,12 @@ import com.backbone.phalanx.authentication.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
    private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -40,6 +43,9 @@ public class SecurityConfig {
                                 "/api/user/forgot-password/verify-code",
                                 "/api/user/forgot-password/reset"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/role").hasAuthority("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/enable").hasAuthority("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/disable").hasAuthority("EMPLOYER")
                         .anyRequest()
                         .authenticated()
                 ).sessionManagement(

@@ -3,6 +3,7 @@ package com.backbone.phalanx.product.service;
 import com.backbone.phalanx.product.dto.*;
 import com.backbone.phalanx.product.model.Product;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ProductService {
@@ -17,6 +18,16 @@ public interface ProductService {
      *         along with pagination information such as total pages, total elements, and current page.
      */
     ProductFilterResponseDto getAllProductsByFiltering(ProductFilterRequestDto productFilterRequestDto);
+
+    /**
+     * Retrieves a list of all products available in the system.
+     *
+     * @return a list of ProductResponseDto objects, where each object contains
+     *         detailed information about a product, including external ID, name,
+     *         SKU, barcode, unit, category, prices, stock balance, photo URL, and
+     *         timestamps for creation and update.
+     */
+    List<ProductResponseDto> getAllProducts();
 
     /**
      * Retrieves the product details for the given barcode.

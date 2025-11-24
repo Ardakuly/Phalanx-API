@@ -1,0 +1,50 @@
+package com.backbone.phalanx.report.service.implementation;
+
+import com.backbone.phalanx.product.dto.ProductResponseDto;
+import com.backbone.phalanx.report.service.ReportLeftoverPdfService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ReportLeftoverPdfServiceImpl implements ReportLeftoverPdfService {
+
+    @Override
+    public byte[] generateReportLeftOverPdf(List<ProductResponseDto> products) {
+        String html = parseThymeleafTemplate(products);
+        return generatePdfFromHtml(html);
+    }
+
+    private String parseThymeleafTemplate(List<ProductResponseDto> products) {
+        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+
+        TemplateEngine templateEngine = new TemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+
+        Context context = new Context();
+        context.setVariable("products", products);
+
+        return templateEngine.process("report-leftover.html", context);
+    }
+
+    private byte[] generatePdfFromHtml(String html) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ITextRenderer renderer = new ITextRenderer();
+        renderer.setDocumentFromString(html);
+        renderer.layout();
+        renderer.createPDF(outputStream);
+        return outputStream.toByteArray();
+    }
+}

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/public")
+@RequestMapping(value = "/api/public/user")
 @Tag(name = "Authentication", description = "Sign-up / Sign-in APIs")
 @RequiredArgsConstructor
 @Slf4j

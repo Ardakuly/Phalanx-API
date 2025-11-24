@@ -1,7 +1,7 @@
 package com.backbone.phalanx.product.service.implementation;
 
 import com.backbone.phalanx.exception.ProductNotFoundException;
-import com.backbone.phalanx.exception.ProductStockBalanceNotSufficient;
+import com.backbone.phalanx.exception.ProductStockBalanceNotSufficientException;
 import com.backbone.phalanx.product.dto.*;
 import com.backbone.phalanx.product.mapper.ProductMapper;
 import com.backbone.phalanx.product.model.Product;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
         log.info("Filtered response has {} found records.", productFilterResponseDto.totalElements());
 
         return productFilterResponseDto;
+    }
+
+    @Override
+    public List<ProductResponseDto> getAllProducts() {
+        return productRepository.findAll().stream().map(productMapper::toDto).toList();
     }
 
     @Override
@@ -146,7 +152,7 @@ public class ProductServiceImpl implements ProductService {
        );
 
        if (productInStock.getStockBalance().subtract(product.quantity()).compareTo(BigDecimal.ZERO) < 0) {
-           throw new ProductStockBalanceNotSufficient(productInStock.getName());
+           throw new ProductStockBalanceNotSufficientException(productInStock.getName());
        }
 
         productInStock.setStockBalance(productInStock.getStockBalance().subtract(product.quantity()));

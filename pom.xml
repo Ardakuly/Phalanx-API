@@ -116,6 +116,16 @@
 			<version>1.5.5.Final</version>
 			<scope>provided</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>3.5.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xhtmlrenderer</groupId>
+            <artifactId>flying-saucer-pdf</artifactId>
+            <version>9.13.3</version>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -135,7 +145,7 @@
 				<version>0.12.3</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>
+    </dependencyManagement>
 	<build>
 		<plugins>
 			<plugin>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Products Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        h2 { margin-bottom: 10px; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Products Report</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Barcode</th>
+        <th>Category</th>
+        <th>Purchased Price</th>
+        <th>Selling Price</th>
+        <th>Stock Balance</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="p : ${products}">
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.barcode}"></td>
+        <td th:text="${p.category.name}"></td>
+        <td th:text="${p.purchasedPrice}"></td>
+        <td th:text="${p.sellingPrice}"></td>
+        <td th:text="${p.stockBalance}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

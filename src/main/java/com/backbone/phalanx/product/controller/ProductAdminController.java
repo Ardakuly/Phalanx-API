@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "/api/public/admin/product")
+@RequestMapping(value = "/api/admin/product")
 @Tag(name = "Product for Admin", description = "Administration operations with products")
 @RequiredArgsConstructor
 @Slf4j

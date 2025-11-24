@@ -41,6 +41,7 @@ public class JwtService {
         if (userDetails instanceof User) {
             claims.put("id", ((User) userDetails).getId());
             claims.put("email", ((User) userDetails).getEmail());
+            claims.put("role", ((User) userDetails).getRole().name());
         }
 
         return generateToken(claims, userDetails, expiration);

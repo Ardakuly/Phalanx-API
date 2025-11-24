@@ -8,8 +8,9 @@ import com.backbone.phalanx.authentication.dto.SignUpRequest;
 import com.backbone.phalanx.authentication.model.User;
 import com.backbone.phalanx.authentication.service.AuthenticationService;
 import com.backbone.phalanx.authentication.service.UserService;
-import com.backbone.phalanx.exception.RefreshTokenIsInvalid;
-import com.backbone.phalanx.exception.UserIsNotEnabled;
+import com.backbone.phalanx.authorization.model.Role;
+import com.backbone.phalanx.exception.RefreshTokenIsInvalidException;
+import com.backbone.phalanx.exception.UserIsNotEnabledException;
 import com.backbone.phalanx.notification.notification.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -51,6 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setCreatedAt(LocalDateTime.now());
         user.setIsBlocked(false);
         user.setIsEmailVerified(false);
+        user.setRole(Role.EMPLOYER);
         // TODO: Set Profile Picture URL
 
         userService.create(user);
@@ -73,11 +75,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userService.loadUserByUsername(request.email());
 
         if (!user.isEnabled()) {
-            throw new UserIsNotEnabled(request.email());
+            throw new UserIsNotEnabledException(request.email());
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.email(), request.password()
+                request.email(), request.password(), user.getAuthorities()
         ));
 
         String accessJwt = jwtService.generateToken(user, getCurrentDay());
@@ -95,11 +97,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = userService.loadUserByUsername(email);
 
         if (!jwtService.isTokenValid(refreshToken, user)) {
-            throw new RefreshTokenIsInvalid(user.getEmail());
+            throw new RefreshTokenIsInvalidException(user.getEmail());
         }
 
         if (!user.isEnabled()) {
-            throw new UserIsNotEnabled(email);
+            throw new UserIsNotEnabledException(email);
         }
 
         String newAccessJwt = jwtService.generateToken(user, getCurrentDay());

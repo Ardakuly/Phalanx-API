@@ -1,10 +1,13 @@
 package com.backbone.phalanx.authentication.model;
 
+import com.backbone.phalanx.authorization.converter.RoleConverter;
+import com.backbone.phalanx.authorization.model.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -19,7 +22,6 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     @Column(name = "email")
@@ -46,12 +48,16 @@ public class User implements UserDetails {
     @Column(name = "is_blocked")
     private Boolean isBlocked;
 
+    @Convert(converter = RoleConverter.class)
+    @Column(name = "role")
+    private Role role;
+
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Override
@@ -66,6 +72,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return !this.isBlocked && this.isEmailVerified;
+        return Boolean.TRUE.equals(isEmailVerified) && Boolean.FALSE.equals(isBlocked);
     }
 }
