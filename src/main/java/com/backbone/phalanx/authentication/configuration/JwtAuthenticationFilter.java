@@ -1,7 +1,7 @@
 package com.backbone.phalanx.authentication.configuration;
 
-import com.backbone.phalanx.authentication.model.User;
-import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.user.model.User;
+import com.backbone.phalanx.user.service.UserService;
 import com.backbone.phalanx.authentication.service.implementation.JwtService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package com.backbone.phalanx.authentication.service.implementation;
 
-import com.backbone.phalanx.authentication.model.User;
+import com.backbone.phalanx.user.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

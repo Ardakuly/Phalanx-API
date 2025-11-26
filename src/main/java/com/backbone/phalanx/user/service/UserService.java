@@ -1,11 +1,20 @@
-package com.backbone.phalanx.authentication.service;
+package com.backbone.phalanx.user.service;
 
-import com.backbone.phalanx.authentication.model.User;
 import com.backbone.phalanx.authorization.model.Role;
+import com.backbone.phalanx.user.dto.UserDto;
+import com.backbone.phalanx.user.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.List;
 
 public interface UserService extends UserDetailsService {
 
+    /**
+     * Retrieves a list of all users.
+     *
+     * @return a list of all users as UserDto objects
+     */
+    List<UserDto> getAllUsers();
     /**
      * Create a new user.
      * @param user

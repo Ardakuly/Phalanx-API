@@ -1,6 +1,6 @@
 package com.backbone.phalanx.authentication.configuration;
 
-import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

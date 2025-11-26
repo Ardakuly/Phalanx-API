@@ -1,4 +1,4 @@
-package com.backbone.phalanx.authentication.model;
+package com.backbone.phalanx.user.model;
 
 import com.backbone.phalanx.authorization.converter.RoleConverter;
 import com.backbone.phalanx.authorization.model.Role;

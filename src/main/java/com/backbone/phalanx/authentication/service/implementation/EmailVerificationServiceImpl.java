@@ -1,8 +1,8 @@
 package com.backbone.phalanx.authentication.service.implementation;
 
-import com.backbone.phalanx.authentication.model.User;
+import com.backbone.phalanx.user.model.User;
 import com.backbone.phalanx.authentication.service.EmailVerificationService;
-import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

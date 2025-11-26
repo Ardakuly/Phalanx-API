@@ -1,8 +1,10 @@
-package com.backbone.phalanx.authentication.service.implementation;
+package com.backbone.phalanx.user.service.implementation;
 
-import com.backbone.phalanx.authentication.UserRepository;
-import com.backbone.phalanx.authentication.model.User;
-import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.user.dto.UserDto;
+import com.backbone.phalanx.user.mapper.UserMapper;
+import com.backbone.phalanx.user.repository.UserRepository;
+import com.backbone.phalanx.user.model.User;
+import com.backbone.phalanx.user.service.UserService;
 import com.backbone.phalanx.authorization.model.Role;
 import com.backbone.phalanx.exception.UserAlreadyExistsException;
 import com.backbone.phalanx.exception.UserNotFoundException;
@@ -10,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +20,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    @Override
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream().map(userMapper::toDto).toList();
+    }
 
     @Override
     public void create(User user) {

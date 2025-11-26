@@ -1,6 +1,6 @@
-package com.backbone.phalanx.authentication;
+package com.backbone.phalanx.user.repository;
 
-import com.backbone.phalanx.authentication.model.User;
+import com.backbone.phalanx.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

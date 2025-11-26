@@ -1,6 +1,6 @@
 package com.backbone.phalanx.authorization.controller;
 
-import com.backbone.phalanx.authentication.service.UserService;
+import com.backbone.phalanx.user.service.UserService;
 import com.backbone.phalanx.authorization.model.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
