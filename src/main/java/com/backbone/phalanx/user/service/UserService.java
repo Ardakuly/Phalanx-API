@@ -35,6 +35,14 @@ public interface UserService extends UserDetailsService {
     User loadUserByUsername(String email);
 
     /**
+     * Retrieves a user by their username (email) and returns the corresponding UserDto object.
+     *
+     * @param email the email address (username) of the user to retrieve
+     * @return the user details wrapped in a UserDto object, or null if no user is found
+     */
+    UserDto getUserByUsername(String email);
+
+    /**
      * Updates the role of a user identified by their email address to the specified role.
      *
      * @param email the email address of the user whose role is to be changed

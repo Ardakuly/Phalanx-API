@@ -49,6 +49,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto getUserByUsername(String email) {
+        return userRepository.findByEmail(email).map(userMapper::toDto).orElseThrow(
+                () -> new UserNotFoundException(email)
+        );
+    }
+
+    @Override
     @Transactional
     public void changeRole(String email, Role role) {
         User existingUser = userRepository.findByEmail(email).orElseThrow(

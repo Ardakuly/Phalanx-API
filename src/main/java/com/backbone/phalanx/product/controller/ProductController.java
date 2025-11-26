@@ -19,7 +19,7 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @GetMapping
+    @PostMapping
     @Operation(summary = "Retrieve all products", description = "Get request to retrieve all products")
     public ProductFilterResponseDto getAllProductsByFiltering(
             @RequestBody ProductFilterRequestDto productFilterRequestDto

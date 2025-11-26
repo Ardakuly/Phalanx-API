@@ -71,6 +71,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+        log.info("Authorization header: {}", authHeader);
+
         String jwt = authHeader.substring(BEARER_PREFIX.length());
         String email = jwtService.extractEmail(jwt);
 
