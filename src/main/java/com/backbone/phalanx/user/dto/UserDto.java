@@ -7,6 +7,7 @@ public record UserDto(
       String firstName,
       String lastName,
       String profilePictureUrl,
-      Role role
+      Role role,
+      Boolean enabled
 ) {
 }

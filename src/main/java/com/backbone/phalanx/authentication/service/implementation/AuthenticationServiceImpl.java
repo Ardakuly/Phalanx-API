@@ -51,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setIsBlocked(false);
         user.setCreatedAt(LocalDateTime.now());
         user.setIsBlocked(false);
-        user.setIsEmailVerified(false);
+        user.setIsEmailVerified(true);
         user.setRole(Role.EMPLOYER);
         // TODO: Set Profile Picture URL
 

@@ -43,9 +43,9 @@ public class SecurityConfig {
                                 "/api/user/forgot-password/verify-code",
                                 "/api/user/forgot-password/reset"
                         ).permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/role").hasAuthority("EMPLOYER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/enable").hasAuthority("EMPLOYER")
-                        .requestMatchers(HttpMethod.PATCH, "/api/users/**/disable").hasAuthority("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/*/role").hasAuthority("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/*/enable").hasAuthority("EMPLOYER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/user/*/disable").hasAuthority("EMPLOYER")
                         .anyRequest()
                         .authenticated()
                 ).sessionManagement(
