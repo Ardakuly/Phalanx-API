@@ -85,9 +85,11 @@ public class ProductServiceImpl implements ProductService {
                         .externalId(UUID.randomUUID().toString())
                         .name(productRequestDto.name())
                         .sku(productRequestDto.sku())
-                        .barcode(productRequestDto.barcode())
-                        .unit(productRequestDto.unit())
-                        .category(categoryService.createCategoryIfNotExists(productRequestDto.category().getName()))
+                        .barcode(
+                                productRequestDto.barcode().isEmpty() ? UUID.randomUUID().toString() :
+                                        productRequestDto.barcode()
+                        ).unit(productRequestDto.unit())
+                        .category(categoryService.createCategoryIfNotExists(productRequestDto.category()))
                         .purchasedPrice(productRequestDto.purchasedPrice())
                         .sellingPrice(productRequestDto.sellingPrice())
                         .stockBalance(productRequestDto.stockBalance())
@@ -114,7 +116,9 @@ public class ProductServiceImpl implements ProductService {
         product.setBarcode(productRequestDto.barcode() != null ? productRequestDto.barcode() : product.getBarcode());
         product.setUnit(productRequestDto.unit() != null ? productRequestDto.unit() : product.getUnit());
         product.setCategory(
-                productRequestDto.category() != null ? productRequestDto.category() : product.getCategory()
+                productRequestDto.category() != null ?
+                        categoryService.createCategoryIfNotExists(productRequestDto.category()) :
+                        product.getCategory()
         );
         product.setPurchasedPrice(
                 productRequestDto.purchasedPrice() != null ?

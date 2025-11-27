@@ -4,9 +4,12 @@ import com.backbone.phalanx.exception.CategoryAlreadyExistsException;
 import com.backbone.phalanx.product.model.Category;
 import com.backbone.phalanx.product.repository.CategoryRepository;
 import com.backbone.phalanx.product.service.CategoryService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,12 +19,14 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
+    @Transactional
     public Category createCategoryIfNotExists(String name) {
 
-        categoryRepository.findByNameIgnoreCase(name).orElseThrow(
-                () -> new CategoryAlreadyExistsException(name)
-        );
+        log.info("Create category with name {}", name);
 
-        return categoryRepository.save(Category.builder().name(name).build());
+        Optional<Category> category = categoryRepository.findByNameIgnoreCase(name);
+
+        return category.orElseGet(() -> categoryRepository.save(Category.builder().name(name).build()));
+
     }
 }

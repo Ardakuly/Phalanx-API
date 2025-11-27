@@ -1,6 +1,5 @@
 package com.backbone.phalanx.product.dto;
 
-import com.backbone.phalanx.product.model.Category;
 import com.backbone.phalanx.product.model.Unit;
 
 import java.math.BigDecimal;
@@ -11,7 +10,7 @@ public record ProductRequestDto(
         String sku,
         String barcode,
         Unit unit,
-        Category category,
+        String category,
         BigDecimal purchasedPrice,
         BigDecimal sellingPrice,
         BigDecimal stockBalance,

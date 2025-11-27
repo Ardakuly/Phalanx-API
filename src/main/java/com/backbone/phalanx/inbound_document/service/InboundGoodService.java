@@ -1,5 +1,6 @@
 package com.backbone.phalanx.inbound_document.service;
 
+import com.backbone.phalanx.inbound_document.model.InboundDocument;
 import com.backbone.phalanx.inbound_document.model.InboundGood;
 import com.backbone.phalanx.product.model.Product;
 
@@ -11,5 +12,5 @@ public interface InboundGoodService {
      * @param productInStock the product in stock to be used for creating the inbound good
      * @return the created InboundGood entity
      */
-    InboundGood createInboundGood(Product productInStock);
+    InboundGood createInboundGood(InboundDocument inboundDocument, Product productInStock);
 }

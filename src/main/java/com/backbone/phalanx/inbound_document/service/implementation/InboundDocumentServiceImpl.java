@@ -2,6 +2,7 @@ package com.backbone.phalanx.inbound_document.service.implementation;
 
 import com.backbone.phalanx.inbound_document.model.InboundDocument;
 import com.backbone.phalanx.inbound_document.model.InboundGood;
+import com.backbone.phalanx.inbound_document.repository.InboundDocumentRepository;
 import com.backbone.phalanx.inbound_document.service.InboundDocumentService;
 import com.backbone.phalanx.inbound_document.service.InboundGoodService;
 import com.backbone.phalanx.product.dto.ProductRequestDto;
@@ -25,6 +26,7 @@ public class InboundDocumentServiceImpl implements InboundDocumentService {
 
     private final ProductService productService;
     private final InboundGoodService inboundGoodService;
+    private final InboundDocumentRepository inboundDocumentRepository;
 
     @Override
     @Transactional(propagation = REQUIRES_NEW)
@@ -34,18 +36,20 @@ public class InboundDocumentServiceImpl implements InboundDocumentService {
                 .map(productService::createProduct)
                 .toList();
 
-        List<InboundGood> inboundGoods = productsInStock.stream()
-                .map(inboundGoodService::createInboundGood)
-                .toList();
-
         InboundDocument inboundDocument = InboundDocument.builder()
                 .externalId(UUID.randomUUID().toString())
                 .documentNumber(UUID.randomUUID().toString())
-                .inboundGoods(inboundGoods)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
 
+        InboundDocument savedInboundDocument = inboundDocumentRepository.save(inboundDocument);
+
+        List<InboundGood> inboundGoods = productsInStock.stream()
+                .map((product) -> inboundGoodService.createInboundGood(inboundDocument, product))
+                .toList();
+
+        savedInboundDocument.setInboundGoods(inboundGoods);
 
         log.info(
                 "Inbound document created with document number: {}",
