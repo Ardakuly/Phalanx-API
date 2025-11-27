@@ -6,6 +6,7 @@ import com.backbone.phalanx.product.dto.*;
 import com.backbone.phalanx.product.mapper.ProductMapper;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.repository.ProductRepository;
+import com.backbone.phalanx.product.service.CategoryService;
 import com.backbone.phalanx.product.service.ProductService;
 import com.backbone.phalanx.specification.ProductSpecification;
 import jakarta.transaction.Transactional;
@@ -31,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final CategoryService categoryService;
 
     @Override
     public ProductFilterResponseDto getAllProductsByFiltering(ProductFilterRequestDto productFilterRequestDto) {
@@ -85,7 +87,7 @@ public class ProductServiceImpl implements ProductService {
                         .sku(productRequestDto.sku())
                         .barcode(productRequestDto.barcode())
                         .unit(productRequestDto.unit())
-                        .category(productRequestDto.category())
+                        .category(categoryService.createCategoryIfNotExists(productRequestDto.category().getName()))
                         .purchasedPrice(productRequestDto.purchasedPrice())
                         .sellingPrice(productRequestDto.sellingPrice())
                         .stockBalance(productRequestDto.stockBalance())
