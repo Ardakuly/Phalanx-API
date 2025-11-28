@@ -153,8 +153,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Map.Entry<ProductSellDto, Product> sell(ProductSellDto product) {
-       Product productInStock = productRepository.findByExternalId(product.externalId()).orElseThrow(
-               () -> new ProductNotFoundException(product.externalId())
+       Product productInStock = productRepository.findByBarcode(product.barcode()).orElseThrow(
+               () -> new ProductNotFoundException(product.barcode())
        );
 
        if (productInStock.getStockBalance().subtract(product.quantity()).compareTo(BigDecimal.ZERO) < 0) {

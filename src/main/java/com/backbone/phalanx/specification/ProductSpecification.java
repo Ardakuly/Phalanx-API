@@ -85,7 +85,7 @@ public class ProductSpecification {
         }
 
         return Sort.by(
-                sortDirection.equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy
+                sortDirection.toLowerCase().equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC, sortBy
         );
     }
 

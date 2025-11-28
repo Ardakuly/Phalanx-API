@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/outbound_document")
+@RequestMapping(value = "/api/outbound-document")
 @Tag(name = "Outbound Document for Admin", description = "Administration operations for Outbound Document")
 @RequiredArgsConstructor
 @Slf4j

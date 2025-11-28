@@ -37,25 +37,25 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
                 productService::sell
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
+        OutboundDocument outboundDocument = outboundDocumentRepository.save(
+                OutboundDocument.builder()
+                        .externalId(UUID.randomUUID().toString())
+                        .documentNumber(UUID.randomUUID().toString())
+                        .createdAt(java.time.LocalDateTime.now())
+                        .updatedAt(java.time.LocalDateTime.now())
+                        .build()
+        );
+
         List<OutboundGood> outboundGoods = productSellDtoToProducts.entrySet().stream().map(
                 (productSellDtoToProduct) -> {
                     ProductSellDto productSellDto = productSellDtoToProduct.getKey();
                     Product product = productSellDtoToProduct.getValue();
 
-                    return outboundGoodService.createOutboundGood(productSellDto, product);
+                    return outboundGoodService.createOutboundGood(outboundDocument, productSellDto, product);
                 }
         ).toList();
 
-        OutboundDocument outboundDocument = OutboundDocument.builder()
-                .externalId(UUID.randomUUID().toString())
-                .documentNumber(UUID.randomUUID().toString())
-                .outboundGoods(outboundGoods)
-                .createdAt(java.time.LocalDateTime.now())
-                .updatedAt(java.time.LocalDateTime.now())
-                .build();
-
-
-        outboundDocumentRepository.save(outboundDocument);
+        outboundDocument.setOutboundGoods(outboundGoods);
 
         log.info(
                 "Outbound document created with document number: {} and externalId: {}",
