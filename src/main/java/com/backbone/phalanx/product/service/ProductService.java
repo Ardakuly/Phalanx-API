@@ -40,6 +40,16 @@ public interface ProductService {
     ProductResponseDto getProductByBarcode(String barcode);
 
     /**
+     * Retrieves the product details based on the provided product name.
+     *
+     * @param name the name of the product to be retrieved
+     * @return a ProductResponseDto containing detailed information about the product,
+     *         including external ID, name, SKU, barcode, unit, category, prices,
+     *         stock balance, photo URL, and timestamps for creation and update
+     */
+    ProductResponseDto getByName(String name);
+
+    /**
      * Creates a new product entity based on the provided product request data.
      *
      * @param productRequestDto the data transfer object containing the details of the product to be created.

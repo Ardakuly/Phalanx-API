@@ -1,5 +1,6 @@
 package com.backbone.phalanx.product.repository;
 
+import com.backbone.phalanx.product.dto.ProductResponseDto;
 import com.backbone.phalanx.product.model.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -15,4 +16,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     void deleteByExternalId(String externalId);
 
     Optional<Product> findByBarcode(String barcode);
+
+    Optional<Product> findByNameIgnoreCase(String name);
 }

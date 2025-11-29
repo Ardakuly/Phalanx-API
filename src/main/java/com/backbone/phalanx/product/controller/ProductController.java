@@ -32,4 +32,10 @@ public class ProductController {
     public ProductResponseDto getProductByBarcode(@PathVariable("barcode") String barcode) {
         return productService.getProductByBarcode(barcode);
     }
+
+    @GetMapping("/name/{name}")
+    @Operation(summary = "Retrieve product by name", description = "Get request to retrieve product by name")
+    public ProductResponseDto getByName(@PathVariable("name") String name) {
+        return productService.getByName(name);
+    }
 }

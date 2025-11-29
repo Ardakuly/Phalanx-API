@@ -34,7 +34,7 @@ public class  InboundGood {
     @Column(name = "sku")
     private String sku;
 
-    @Column(name = "barcode", unique = true)
+    @Column(name = "barcode")
     private String barcode;
 
     @Column(name = "unit", nullable = false)

@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -78,8 +79,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductResponseDto getByName(String name) {
+        return productRepository.findByNameIgnoreCase(name).map(productMapper::toDto).orElseThrow(
+                () -> new ProductNotFoundException(name)
+        );
+    }
+
+    @Override
     @Transactional
     public Product createProduct(ProductRequestDto productRequestDto) {
+
+        Optional<Product> existingProduct= productRepository.findByBarcode(productRequestDto.barcode());
+
+        if  (existingProduct.isPresent()) {
+            Product product = existingProduct.get();
+
+            BigDecimal oldPurchasedPrice = productRequestDto.purchasedPrice().multiply(productRequestDto.stockBalance());
+            BigDecimal updatedPurchasedPrice = product.getPurchasedPrice().multiply(product.getStockBalance());
+
+            product.setStockBalance(product.getStockBalance().add(productRequestDto.stockBalance()));
+            product.setPurchasedPrice(
+                    oldPurchasedPrice.add(updatedPurchasedPrice).divide(
+                            product.getStockBalance(), 2, BigDecimal.ROUND_HALF_UP
+                    )
+            );
+            product.setSellingPrice(productRequestDto.sellingPrice());
+            product.setUpdatedAt(LocalDateTime.now());
+
+            return product;
+        }
+
         Product product = productRepository.save(
                 Product.builder()
                         .externalId(UUID.randomUUID().toString())
