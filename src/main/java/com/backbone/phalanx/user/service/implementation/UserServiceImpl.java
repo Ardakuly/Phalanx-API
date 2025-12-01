@@ -35,6 +35,8 @@ public class UserServiceImpl implements UserService {
             throw new UserAlreadyExistsException(user.getEmail());
         }
 
+        user.setRole(userRepository.findAllByRole(Role.EMPLOYER).findAny().isPresent() ? Role.EMPLOYEE : Role.EMPLOYER);
+
         userRepository.save(user);
     }
 
