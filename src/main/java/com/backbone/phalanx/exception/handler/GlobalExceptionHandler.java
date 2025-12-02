@@ -4,6 +4,7 @@ import com.backbone.phalanx.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -71,6 +72,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.EXPECTATION_FAILED)
                 .body(Map.of("error", exception.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException exception) {
+        logException(exception);
+        return ResponseEntity.
+                status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("error", "Неверные учетные данные"));
     }
 
     private void logException(Exception exception) {

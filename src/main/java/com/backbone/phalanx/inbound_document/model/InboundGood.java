@@ -3,6 +3,7 @@ package com.backbone.phalanx.inbound_document.model;
 import com.backbone.phalanx.product.converter.UnitConverter;
 import com.backbone.phalanx.product.model.Category;
 import com.backbone.phalanx.product.model.Unit;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,7 @@ public class  InboundGood {
 
     @ManyToOne
     @NotNull
+    @JsonIgnore
     private InboundDocument inboundDocument;
 
     @Column(name = "created_at", nullable = false)

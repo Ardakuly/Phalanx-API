@@ -3,6 +3,6 @@ package com.backbone.phalanx.exception;
 public class UserAlreadyExistsException extends RuntimeException {
 
     public UserAlreadyExistsException(String username) {
-        super("User with username: " + username + " already exists.");
+        super("Пользователь с именем пользователя: " + username + " уже существует.");
     }
 }

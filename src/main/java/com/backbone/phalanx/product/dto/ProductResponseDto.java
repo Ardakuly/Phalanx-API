@@ -11,7 +11,7 @@ public record ProductResponseDto(
         String name,
         String sku,
         String barcode,
-        Unit unit,
+        String unit,
         Category category,
         BigDecimal purchasedPrice,
         BigDecimal sellingPrice,

@@ -3,6 +3,6 @@ package com.backbone.phalanx.exception;
 public class UserIsNotEnabledException extends RuntimeException {
 
     public UserIsNotEnabledException(String username) {
-        super("User with username: " + username + " is not enabled.");
+        super("Пользователь с именем пользователя: " + username + " не активирован.");
     }
 }
