@@ -1,5 +1,7 @@
 package com.backbone.phalanx.report.service;
 
+import java.io.IOException;
+
 public interface ReportService {
 
     /**
@@ -7,7 +9,7 @@ public interface ReportService {
      *
      * @return a byte array representing the leftover report data
      */
-    byte[] getLeftoverReport();
+    byte[] getLeftoverReport() throws IOException;
 
     /**
      * Generates a PDF document containing transaction details.

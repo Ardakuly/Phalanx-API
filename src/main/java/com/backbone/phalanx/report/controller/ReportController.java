@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping(value = "/api/report")
 @Tag(name = "Report", description = "Generation of reports based on data in database")
@@ -23,7 +25,7 @@ public class ReportController {
             summary = "Get report regarding leftovers in stock",
             description = "Return a pdf in byte array representative"
     )
-    public ResponseEntity<byte[]> getReportLeftoverPdf() {
+    public ResponseEntity<byte[]> getReportLeftoverPdf() throws IOException {
         return new ResponseEntity<>(reportService.getLeftoverReport(), HttpStatus.OK);
     }
 

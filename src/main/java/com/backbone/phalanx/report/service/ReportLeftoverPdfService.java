@@ -2,6 +2,7 @@ package com.backbone.phalanx.report.service;
 
 import com.backbone.phalanx.product.dto.ProductResponseDto;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ReportLeftoverPdfService {
@@ -12,5 +13,5 @@ public interface ReportLeftoverPdfService {
      * @param products a list of ProductResponseDto objects containing details about the products
      * @return a byte array representing the generated PDF document
      */
-    byte[] generateReportLeftOverPdf(List<ProductResponseDto> products);
+    byte[] generateReportLeftOverPdf(List<ProductResponseDto> products) throws IOException;
 }

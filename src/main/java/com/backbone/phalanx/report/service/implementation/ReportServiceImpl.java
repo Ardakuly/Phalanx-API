@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -19,7 +20,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportLeftoverPdfService reportLeftoverPdfService;
 
     @Override
-    public byte[] getLeftoverReport() {
+    public byte[] getLeftoverReport() throws IOException {
 
         List<ProductResponseDto> products = productService.getAllProducts();
 
