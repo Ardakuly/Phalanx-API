@@ -1,6 +1,8 @@
 package com.backbone.phalanx.outbound_document.model;
 
 
+import com.backbone.phalanx.outbound_document.converter.PaymentTypeConverter;
+import com.backbone.phalanx.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +29,16 @@ public class OutboundDocument {
 
     @Column(name = "document_number", nullable = false, unique = true)
     private String documentNumber;
+
+    @Column(name = "payment_type", nullable = false)
+    @Convert(converter = PaymentTypeConverter.class)
+    private PaymentType paymentType;
+
+    @OneToOne
+    private User seller;
+
+    @Column(name = "comment")
+    private String comment;
 
     @OneToMany(mappedBy = "outboundDocument", cascade = CascadeType.REMOVE)
     private List<OutboundGood> outboundGoods;

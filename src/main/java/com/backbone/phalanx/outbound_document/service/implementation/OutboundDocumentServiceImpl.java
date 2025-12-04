@@ -1,5 +1,6 @@
 package com.backbone.phalanx.outbound_document.service.implementation;
 
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentDto;
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import com.backbone.phalanx.outbound_document.model.OutboundGood;
 import com.backbone.phalanx.outbound_document.repository.OutboundDocumentRepository;
@@ -8,6 +9,7 @@ import com.backbone.phalanx.outbound_document.service.OutboundGoodService;
 import com.backbone.phalanx.product.dto.ProductSellDto;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.service.ProductService;
+import com.backbone.phalanx.user.service.implementation.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,12 +30,15 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
     private final OutboundDocumentRepository outboundDocumentRepository;
     private final ProductService productService;
     private final OutboundGoodService outboundGoodService;
+    private final UserServiceImpl userService;
 
     @Override
     @Transactional(propagation = REQUIRES_NEW)
-    public OutboundDocument createOutboundDocument(List<ProductSellDto> productsSellDtos) {
+    public OutboundDocument createOutboundDocument(
+            OutboundDocumentDto outboundDocumentDto, String sellerEmail
+    ) {
 
-        Map<ProductSellDto, Product> productSellDtoToProducts = productsSellDtos.stream().map(
+        Map<ProductSellDto, Product> productSellDtoToProducts = outboundDocumentDto.products().stream().map(
                 productService::sell
         ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
@@ -41,6 +46,8 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
                 OutboundDocument.builder()
                         .externalId(UUID.randomUUID().toString())
                         .documentNumber(UUID.randomUUID().toString())
+                        .paymentType(outboundDocumentDto.paymentType())
+                        .seller(userService.loadUserByUsername(sellerEmail))
                         .createdAt(java.time.LocalDateTime.now())
                         .updatedAt(java.time.LocalDateTime.now())
                         .build()

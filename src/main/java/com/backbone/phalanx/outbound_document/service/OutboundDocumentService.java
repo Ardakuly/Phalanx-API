@@ -1,18 +1,18 @@
 package com.backbone.phalanx.outbound_document.service;
 
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentDto;
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
-import com.backbone.phalanx.product.dto.ProductSellDto;
-
-import java.util.List;
 
 public interface OutboundDocumentService {
 
     /**
-     * Creates a new outbound document based on the provided list of products to be sold.
+     * Creates and stores an outbound document representing a transaction of sold products.
      *
-     * @param products the list of products to be included in the outbound document, each represented
-     *                 by a ProductSellDto containing details such as external ID, barcode, and quantity.
-     * @return the newly created OutboundDocument containing details of the sold products.
+     * @param outboundDocumentDto the data transfer object containing details of the products being sold,
+     *                            payment type, and an optional comment associated with the transaction.
+     * @param sellerEmail the email address of the seller initiating the transaction.
+     * @return the created {@link OutboundDocument} entity containing details of the transaction,
+     *         including seller information and associated products.
      */
-    OutboundDocument createOutboundDocument(List<ProductSellDto> products);
+    OutboundDocument createOutboundDocument(OutboundDocumentDto outboundDocumentDto, String sellerEmail);
 }
