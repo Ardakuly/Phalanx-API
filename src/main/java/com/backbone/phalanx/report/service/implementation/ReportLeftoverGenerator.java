@@ -1,7 +1,9 @@
 package com.backbone.phalanx.report.service.implementation;
 
 import com.backbone.phalanx.product.dto.ProductResponseDto;
-import com.backbone.phalanx.report.service.ReportLeftoverPdfService;
+import com.backbone.phalanx.product.service.ProductService;
+import com.backbone.phalanx.report.model.ReportType;
+import com.backbone.phalanx.report.service.ReportGenerator;
 import com.lowagie.text.pdf.BaseFont;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,21 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ReportLeftoverPdfServiceImpl implements ReportLeftoverPdfService {
+public class ReportLeftoverGenerator implements ReportGenerator {
+
+    private final ProductService productService;
 
     @Override
-    public byte[] generateReportLeftOverPdf(List<ProductResponseDto> products) throws IOException {
+    public ReportType getReportType() {
+        return ReportType.LEFTOVERS;
+    }
+
+    @Override
+    public byte[] generateReport() throws IOException {
+        return generateReportLeftOverPdf(productService.getAllProducts());
+    }
+
+    private byte[] generateReportLeftOverPdf(List<ProductResponseDto> products) throws IOException {
         String html = parseThymeleafTemplate(products);
         return generatePdfFromHtml(html);
     }
@@ -66,5 +79,4 @@ public class ReportLeftoverPdfServiceImpl implements ReportLeftoverPdfService {
         renderer.createPDF(outputStream);
         return outputStream.toByteArray();
     }
-
 }

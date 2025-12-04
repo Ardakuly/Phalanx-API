@@ -82,6 +82,14 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", "Неверные учетные данные"));
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleReportGeneration(ReportGenerationException exception) {
+        logException(exception);
+        return ResponseEntity.
+                status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
     private void logException(Exception exception) {
         log.error("EXCEPTION THROWN: {}", exception.getMessage());
     }
