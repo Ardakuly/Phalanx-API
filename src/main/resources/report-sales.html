@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Ежемесячный отчет о продажах</title>
+
+    <style>
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .transaction-header {
+            background-color: #e0e0e0; /* light gray */
+            font-weight: bold;
+        }
+
+        .product-header {
+            background-color: #f5f5f5; /* very light gray */
+            font-weight: bold;
+        }
+
+        .summary-row {
+            background-color: #d0d0d0; /* dark gray */
+            font-weight: bold;
+        }
+
+        td.number {
+            text-align: right;
+        }
+
+        .spacer-row td {
+            background-color: #fff;
+            height: 10px;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Ежемесячный отчет о продажах</h1>
+
+<table>
+    <tbody th:each="doc : ${transactions}">
+
+    <tr class="transaction-header">
+        <th>Продавец</th>
+        <th>Тип оплаты</th>
+        <th>Общая сумма</th>
+        <th>Маржа</th>
+        <th>Комментарий</th>
+        <th>Дата и время продажи</th>
+    </tr>
+
+    <tr>
+        <td th:text="${doc.seller.firstName + ' ' + doc.seller.lastName}"></td>
+        <td th:text="${doc.paymentType.name}"></td>
+        <td class="number" th:text="${doc.totalIncome + ' ₸'}"></td>
+        <td class="number" th:text="${doc.margin + ' ₸'}"></td>
+        <td th:text="${doc.comment != null ? doc.comment : '—'}"></td>
+        <td th:text="${#temporals.format(doc.createdAt, 'dd.MM.yyyy HH:mm')}"></td>
+    </tr>
+
+    <tr class="product-header">
+        <th>Название товара</th>
+        <th>Штрихкод</th>
+        <th>Количество</th>
+        <th>Закупочная цена</th>
+        <th>Цена продажи</th>
+        <th>Маржа</th>
+    </tr>
+
+    <tr th:each="g : ${doc.outboundGoods}">
+        <td th:text="${g.name}"></td>
+        <td th:text="${g.barcode}"></td>
+        <td class="number" th:text="${g.quantity}"></td>
+        <td class="number" th:text="${g.purchasedPrice + ' ₸'}"></td>
+        <td class="number" th:text="${g.sellingPrice + ' ₸'}"></td>
+        <td class="number" th:text="${g.sellingPrice.subtract(g.purchasedPrice) + ' ₸'}"></td>
+    </tr>
+
+    <tr class="spacer-row"><td colspan="6"></td></tr>
+    </tbody>
+</table>
+
+<table>
+    <tbody>
+    <tr class="summary-row">
+        <th>Общий доход</th>
+        <th>Общая прибыль</th>
+    </tr>
+    <tr class="summary-row">
+        <td th:text="${totalIncome + ' ₸'}"></td>
+        <td th:text="${totalProfit  + ' ₸'}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

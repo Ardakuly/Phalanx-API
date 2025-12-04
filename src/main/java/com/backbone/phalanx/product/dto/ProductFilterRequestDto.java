@@ -1,10 +1,12 @@
 package com.backbone.phalanx.product.dto;
 
 import com.backbone.phalanx.product.model.Category;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Builder
 public record ProductFilterRequestDto(
         Integer page,
         Integer pageSize,

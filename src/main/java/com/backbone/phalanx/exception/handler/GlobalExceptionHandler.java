@@ -82,7 +82,7 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", "Неверные учетные данные"));
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler(ReportGenerationException.class)
     public ResponseEntity<?> handleReportGeneration(ReportGenerationException exception) {
         logException(exception);
         return ResponseEntity.

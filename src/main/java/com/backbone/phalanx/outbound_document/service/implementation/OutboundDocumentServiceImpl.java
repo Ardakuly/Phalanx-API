@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,6 +32,12 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
     private final ProductService productService;
     private final OutboundGoodService outboundGoodService;
     private final UserServiceImpl userService;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<OutboundDocument> getAllOutboundDocumentByInterval(LocalDateTime from, LocalDateTime to) {
+        return outboundDocumentRepository.findAllByCreatedAtBetween(from, to);
+    }
 
     @Override
     @Transactional(propagation = REQUIRES_NEW)

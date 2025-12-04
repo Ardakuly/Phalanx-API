@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -48,4 +49,17 @@ public class OutboundDocument {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    public Double getTotalIncome() {
+        return this.outboundGoods.stream().map(OutboundGood::getSellingPrice).reduce(
+                BigDecimal.ZERO, BigDecimal::add
+        ).doubleValue();
+    }
+
+    public Double getMargin() {
+        return this.outboundGoods.stream().map(
+                (outboundGood) -> outboundGood.getSellingPrice().subtract(outboundGood.getPurchasedPrice())
+        ).reduce(BigDecimal.ZERO, BigDecimal::add).doubleValue();
+    }
+
 }

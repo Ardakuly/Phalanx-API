@@ -38,6 +38,6 @@ public class ReportController {
             description = "Return a pdf in byte array representative"
     )
     public ResponseEntity<byte[]> getTransactionsPdf() {
-        return new ResponseEntity<>(reportService.generateReport(ReportType.TRANSACTIONS), HttpStatus.OK);
+        return new ResponseEntity<>(reportService.generateReport(ReportType.SALES_FOR_MONTH), HttpStatus.OK);
     }
 }

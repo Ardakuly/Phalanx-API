@@ -3,5 +3,5 @@ package com.backbone.phalanx.report.model;
 public enum ReportType {
 
     LEFTOVERS,
-    TRANSACTIONS;
+    SALES_FOR_MONTH;
 }
