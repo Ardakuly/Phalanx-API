@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/product")
 @Tag(name = "Product", description = "Operations with products")
@@ -37,5 +40,11 @@ public class ProductController {
     @Operation(summary = "Retrieve product by name", description = "Get request to retrieve product by name")
     public ProductResponseDto getByName(@PathVariable("name") String name) {
         return productService.getByName(name);
+    }
+
+    @GetMapping("/leftover/{threshold}")
+    @Operation(summary = "Retrieve leftover products", description = "Get request to retrieve products whose stock balance is less than or equal to the specified threshold")
+    public List<ProductResponseDto> getLowStockProducts(@PathVariable("threshold") BigDecimal threshold) {
+        return productService.getLowStockProducts(threshold);
     }
 }

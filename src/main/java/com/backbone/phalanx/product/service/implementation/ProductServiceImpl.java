@@ -202,4 +202,9 @@ public class ProductServiceImpl implements ProductService {
 
         return  Map.entry(product, productInStock);
     }
+
+    @Override
+    public List<ProductResponseDto> getLowStockProducts(BigDecimal threshold) {
+        return productRepository.findByStockBalanceLessThanEqual(threshold).stream().map(productMapper::toDto).toList();
+    }
 }

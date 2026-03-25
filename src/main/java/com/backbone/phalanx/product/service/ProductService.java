@@ -86,4 +86,12 @@ public interface ProductService {
      *         and the value is the corresponding Product entity updated with the new stock balance.
      */
     Map.Entry<ProductSellDto, Product> sell(ProductSellDto products);
+
+    /**
+     * Retrieves a list of products with a stock balance less than or equal to the specified amount.
+     *
+     * @param threshold the maximum stock balance to filter by (inclusive)
+     * @return a list of ProductResponseDto for products meeting the criteria
+     */
+    List<ProductResponseDto> getLowStockProducts(java.math.BigDecimal threshold);
 }
