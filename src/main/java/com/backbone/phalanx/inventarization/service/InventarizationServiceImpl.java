@@ -63,7 +63,7 @@ public class InventarizationServiceImpl implements InventarizationService {
 
         inventarizationItemService.saveAll(itemsToSave);
 
-        return getById(inventarization.getId());
+        return getById(savedInventarization.getId());
     }
 
     @Override
