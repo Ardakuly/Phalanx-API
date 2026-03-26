@@ -90,6 +90,14 @@ public class GlobalExceptionHandler {
                 .body(Map.of("error", exception.getMessage()));
     }
 
+    @ExceptionHandler(StockFrozenException.class)
+    public ResponseEntity<?> handleStockFrozen(StockFrozenException exception) {
+        logException(exception);
+        return ResponseEntity.
+                status(HttpStatus.CONFLICT)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
     private void logException(Exception exception) {
         log.error("EXCEPTION THROWN: {}", exception.getMessage());
     }

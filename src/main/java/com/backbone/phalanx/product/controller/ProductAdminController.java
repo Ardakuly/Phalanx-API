@@ -1,6 +1,5 @@
 package com.backbone.phalanx.product.controller;
 
-
 import com.backbone.phalanx.product.dto.ProductRequestDto;
 import com.backbone.phalanx.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,10 +20,7 @@ public class ProductAdminController {
     private final ProductService productService;
 
     @PutMapping("/update")
-    @Operation(
-            summary = "Update information of the product",
-            description = "Put request to update information of the product"
-    )
+    @Operation(summary = "Update information of the product", description = "Put request to update information of the product")
     public ResponseEntity<Void> update(@RequestBody ProductRequestDto productRequestDto) {
         productService.updateProduct(productRequestDto);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -94,4 +94,19 @@ public interface ProductService {
      * @return a list of ProductResponseDto for products meeting the criteria
      */
     List<ProductResponseDto> getLowStockProducts(java.math.BigDecimal threshold);
+
+    /**
+     * Retrieves all product entities.
+     *
+     * @return a list of Product entities.
+     */
+    List<Product> getAllProductEntities();
+
+    /**
+     * Updates the stock balance of a specific product entity.
+     *
+     * @param productId the internal ID of the product
+     * @param newStock the new stock balance
+     */
+    void updateProductStock(Long productId, java.math.BigDecimal newStock);
 }

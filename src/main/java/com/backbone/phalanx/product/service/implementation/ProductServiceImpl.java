@@ -9,6 +9,9 @@ import com.backbone.phalanx.product.repository.ProductRepository;
 import com.backbone.phalanx.product.service.CategoryService;
 import com.backbone.phalanx.product.service.ProductService;
 import com.backbone.phalanx.specification.ProductSpecification;
+import com.backbone.phalanx.inventarization.model.InventarizationStatus;
+import com.backbone.phalanx.inventarization.repository.InventarizationRepository;
+import com.backbone.phalanx.exception.StockFrozenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryService categoryService;
+    private final InventarizationRepository inventarizationRepository;
 
     @Override
     public ProductFilterResponseDto getAllProductsByFiltering(ProductFilterRequestDto productFilterRequestDto) {
@@ -88,6 +92,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Product createProduct(ProductRequestDto productRequestDto) {
+        validateStockNotFrozen();
 
         Optional<Product> existingProduct= productRepository.findByBarcode(productRequestDto.barcode());
 
@@ -136,6 +141,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProduct(ProductRequestDto productRequestDto) {
+        validateStockNotFrozen();
         Product product = productRepository.findByExternalId(
                 productRequestDto.externalId()
         ).orElseThrow(() -> new ProductNotFoundException(productRequestDto.externalId()));
@@ -182,6 +188,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public Map.Entry<ProductSellDto, Product> sell(ProductSellDto product) {
+        validateStockNotFrozen();
        Product productInStock = productRepository.findByBarcode(product.barcode()).orElseThrow(
                () -> new ProductNotFoundException(product.barcode())
        );
@@ -206,5 +213,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductResponseDto> getLowStockProducts(BigDecimal threshold) {
         return productRepository.findByStockBalanceLessThanEqual(threshold).stream().map(productMapper::toDto).toList();
+    }
+
+    @Override
+    public List<Product> getAllProductEntities() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void updateProductStock(Long productId, BigDecimal newStock) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(String.valueOf(productId)));
+        product.setStockBalance(newStock);
+        product.setUpdatedAt(LocalDateTime.now());
+        productRepository.save(product);
+    }
+
+    private void validateStockNotFrozen() {
+        if (inventarizationRepository.existsByStatus(InventarizationStatus.IN_PROGRESS)) {
+            throw new StockFrozenException();
+        }
     }
 }
