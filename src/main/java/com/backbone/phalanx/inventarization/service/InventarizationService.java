@@ -36,4 +36,11 @@ public interface InventarizationService {
      * @return inventarization response dto
      */
     InventarizationResponseDto getById(Long id);
+
+    /**
+     * Get active inventarization
+     *
+     * @return inventarization response dto
+     */
+    InventarizationResponseDto getActive();
 }

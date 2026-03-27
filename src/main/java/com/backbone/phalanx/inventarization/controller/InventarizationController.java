@@ -32,6 +32,11 @@ public class InventarizationController {
         return ResponseEntity.ok(inventarizationService.complete(id));
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<InventarizationResponseDto> getActive() {
+        return ResponseEntity.ok(inventarizationService.getActive());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<InventarizationResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(inventarizationService.getById(id));

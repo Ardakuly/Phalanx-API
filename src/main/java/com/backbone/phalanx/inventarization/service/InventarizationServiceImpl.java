@@ -133,4 +133,14 @@ public class InventarizationServiceImpl implements InventarizationService {
 
         return inventarizationMapper.toDto(inventarization, items);
     }
+
+    @Override
+    public InventarizationResponseDto getActive() {
+        Inventarization inventarization = inventarizationRepository.findByStatus(InventarizationStatus.IN_PROGRESS)
+                .orElseThrow(() -> new EntityNotFoundException("Inventarization session not found."));
+
+        List<InventarizationItem> items = inventarizationItemService.findByInventarizationId(inventarization.getId());
+
+        return inventarizationMapper.toDto(inventarization, items);
+    }
 }
