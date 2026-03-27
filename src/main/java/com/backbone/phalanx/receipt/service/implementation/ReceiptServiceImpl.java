@@ -52,7 +52,6 @@ public class ReceiptServiceImpl implements ReceiptService {
 
             Style boldStyle = new Style().setBold(true);
 
-            // Header
             escpos.writeLF(titleStyle, "PHALANX POS");
             escpos.writeLF(subtitleStyle, "Спасибо за покупку!");
             escpos.writeLF("--------------------------------");
@@ -62,7 +61,6 @@ public class ReceiptServiceImpl implements ReceiptService {
             escpos.writeLF("Оплата:   " + document.getPaymentType().getName());
             escpos.writeLF("--------------------------------");
 
-            // Items
             BigDecimal total = BigDecimal.ZERO;
             for (OutboundGood good : document.getOutboundGoods()) {
                 String itemName = good.getName();
@@ -100,8 +98,6 @@ public class ReceiptServiceImpl implements ReceiptService {
             }
         }
 
-        // If no name specified or not found, try to find a generic "Receipt" or "POS"
-        // printer
         for (PrintService service : printServices) {
             String name = service.getName().toLowerCase();
             if (name.contains("receipt") || name.contains("pos") || name.contains("thermal")) {
@@ -109,7 +105,6 @@ public class ReceiptServiceImpl implements ReceiptService {
             }
         }
 
-        // Fallback to default if available
         return PrintServiceLookup.lookupDefaultPrintService();
     }
 }
