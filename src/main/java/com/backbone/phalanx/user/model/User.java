@@ -74,4 +74,8 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return Boolean.TRUE.equals(isEmailVerified) && Boolean.FALSE.equals(isBlocked);
     }
+
+    public String getFullName() {
+        return getFirstName() + " " + getLastName();
+    }
 }
