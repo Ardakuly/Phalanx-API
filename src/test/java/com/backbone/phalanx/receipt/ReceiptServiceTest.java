@@ -1,4 +1,4 @@
-package com.backbone.phalanx.receipt.service;
+package com.backbone.phalanx.receipt;
 
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import com.backbone.phalanx.outbound_document.model.PaymentType;
