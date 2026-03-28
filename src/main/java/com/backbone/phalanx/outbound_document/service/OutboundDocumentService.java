@@ -6,7 +6,18 @@ import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentFilterRequestDto;
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentFilterResponseDto;
+
 public interface OutboundDocumentService {
+
+    /**
+     * Retrieves a filtered and paginated list of outbound documents based on specified criteria.
+     *
+     * @param filter the filtering and pagination criteria
+     * @return a wrapped response containing the current page's results and metadata
+     */
+    OutboundDocumentFilterResponseDto getAllOutboundDocumentsByFiltering(OutboundDocumentFilterRequestDto filter);
 
     /**
      * Retrieves a list of outbound documents that were created within the specified time interval.

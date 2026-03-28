@@ -1,6 +1,9 @@
 package com.backbone.phalanx.outbound_document.service.implementation;
 
 import com.backbone.phalanx.outbound_document.dto.OutboundDocumentDto;
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentFilterRequestDto;
+import com.backbone.phalanx.outbound_document.dto.OutboundDocumentFilterResponseDto;
+import com.backbone.phalanx.outbound_document.mapper.OutboundDocumentMapper;
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import com.backbone.phalanx.outbound_document.model.OutboundGood;
 import com.backbone.phalanx.outbound_document.repository.OutboundDocumentRepository;
@@ -9,9 +12,15 @@ import com.backbone.phalanx.outbound_document.service.OutboundGoodService;
 import com.backbone.phalanx.product.dto.ProductSellDto;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.service.ProductService;
+import com.backbone.phalanx.specification.OutboundDocumentSpecification;
 import com.backbone.phalanx.user.service.implementation.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +41,27 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
     private final ProductService productService;
     private final OutboundGoodService outboundGoodService;
     private final UserServiceImpl userService;
+    private final OutboundDocumentMapper outboundDocumentMapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public OutboundDocumentFilterResponseDto getAllOutboundDocumentsByFiltering(OutboundDocumentFilterRequestDto filter) {
+        Sort sort = OutboundDocumentSpecification.getSort(filter.sortBy(), filter.sortDirection());
+        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize(), sort);
+        Specification<OutboundDocument> spec = OutboundDocumentSpecification.filterBy(filter);
+
+        Page<OutboundDocument> pageResult = outboundDocumentRepository.findAll(spec, pageable);
+
+        OutboundDocumentFilterResponseDto response = new OutboundDocumentFilterResponseDto(
+                pageResult.getTotalPages(),
+                (int) pageResult.getTotalElements(),
+                filter.page(),
+                pageResult.getContent().stream().map(outboundDocumentMapper::toDto).toList()
+        );
+
+        log.info("Filtered outbound documents response has {} found records.", response.totalElements());
+        return response;
+    }
 
     @Override
     @Transactional(readOnly = true)
