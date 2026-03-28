@@ -37,76 +37,72 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRES_NE
 @Slf4j
 public class OutboundDocumentServiceImpl implements OutboundDocumentService {
 
-    private final OutboundDocumentRepository outboundDocumentRepository;
-    private final ProductService productService;
-    private final OutboundGoodService outboundGoodService;
-    private final UserServiceImpl userService;
-    private final OutboundDocumentMapper outboundDocumentMapper;
+        private final OutboundDocumentRepository outboundDocumentRepository;
+        private final ProductService productService;
+        private final OutboundGoodService outboundGoodService;
+        private final UserServiceImpl userService;
+        private final OutboundDocumentMapper outboundDocumentMapper;
 
-    @Override
-    @Transactional(readOnly = true)
-    public OutboundDocumentFilterResponseDto getAllOutboundDocumentsByFiltering(OutboundDocumentFilterRequestDto filter) {
-        Sort sort = OutboundDocumentSpecification.getSort(filter.sortBy(), filter.sortDirection());
-        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize(), sort);
-        Specification<OutboundDocument> spec = OutboundDocumentSpecification.filterBy(filter);
+        @Override
+        @Transactional(readOnly = true)
+        public OutboundDocumentFilterResponseDto getAllOutboundDocumentsByFiltering(
+                        OutboundDocumentFilterRequestDto filter) {
+                Sort sort = OutboundDocumentSpecification.getSort(filter.sortBy(), filter.sortDirection());
+                Pageable pageable = PageRequest.of(filter.page(), filter.pageSize(), sort);
+                Specification<OutboundDocument> spec = OutboundDocumentSpecification.filterBy(filter);
 
-        Page<OutboundDocument> pageResult = outboundDocumentRepository.findAll(spec, pageable);
+                Page<OutboundDocument> pageResult = outboundDocumentRepository.findAll(spec, pageable);
 
-        OutboundDocumentFilterResponseDto response = new OutboundDocumentFilterResponseDto(
-                pageResult.getTotalPages(),
-                (int) pageResult.getTotalElements(),
-                filter.page(),
-                pageResult.getContent().stream().map(outboundDocumentMapper::toDto).toList()
-        );
+                OutboundDocumentFilterResponseDto response = new OutboundDocumentFilterResponseDto(
+                                pageResult.getTotalPages(),
+                                (int) pageResult.getTotalElements(),
+                                filter.page(),
+                                pageResult.getContent().stream().map(outboundDocumentMapper::toDto).toList());
 
-        log.info("Filtered outbound documents response has {} found records.", response.totalElements());
-        return response;
-    }
+                log.info("Filtered outbound documents response has {} found records.", response.totalElements());
+                return response;
+        }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<OutboundDocument> getAllOutboundDocumentByInterval(LocalDateTime from, LocalDateTime to) {
-        return outboundDocumentRepository.findAllByCreatedAtBetween(from, to);
-    }
+        @Override
+        @Transactional(readOnly = true)
+        public List<OutboundDocument> getAllOutboundDocumentByInterval(LocalDateTime from, LocalDateTime to) {
+                return outboundDocumentRepository.findAllByCreatedAtBetween(from, to);
+        }
 
-    @Override
-    @Transactional(propagation = REQUIRES_NEW)
-    public OutboundDocument createOutboundDocument(
-            OutboundDocumentDto outboundDocumentDto, String sellerEmail
-    ) {
+        @Override
+        @Transactional(propagation = REQUIRES_NEW)
+        public OutboundDocument createOutboundDocument(
+                        OutboundDocumentDto outboundDocumentDto, String sellerEmail) {
 
-        Map<ProductSellDto, Product> productSellDtoToProducts = outboundDocumentDto.products().stream().map(
-                productService::sell
-        ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                Map<ProductSellDto, Product> productSellDtoToProducts = outboundDocumentDto.products().stream().map(
+                                productService::sell).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        OutboundDocument outboundDocument = outboundDocumentRepository.save(
-                OutboundDocument.builder()
-                        .externalId(UUID.randomUUID().toString())
-                        .documentNumber(UUID.randomUUID().toString())
-                        .paymentType(outboundDocumentDto.paymentType())
-                        .seller(userService.loadUserByUsername(sellerEmail))
-                        .createdAt(java.time.LocalDateTime.now())
-                        .updatedAt(java.time.LocalDateTime.now())
-                        .build()
-        );
+                OutboundDocument outboundDocument = outboundDocumentRepository.save(
+                                OutboundDocument.builder()
+                                                .externalId(UUID.randomUUID().toString())
+                                                .documentNumber(UUID.randomUUID().toString()) // TODO: generate barcode
+                                                .paymentType(outboundDocumentDto.paymentType())
+                                                .seller(userService.loadUserByUsername(sellerEmail))
+                                                .createdAt(java.time.LocalDateTime.now())
+                                                .updatedAt(java.time.LocalDateTime.now())
+                                                .build());
 
-        List<OutboundGood> outboundGoods = productSellDtoToProducts.entrySet().stream().map(
-                (productSellDtoToProduct) -> {
-                    ProductSellDto productSellDto = productSellDtoToProduct.getKey();
-                    Product product = productSellDtoToProduct.getValue();
+                List<OutboundGood> outboundGoods = productSellDtoToProducts.entrySet().stream().map(
+                                (productSellDtoToProduct) -> {
+                                        ProductSellDto productSellDto = productSellDtoToProduct.getKey();
+                                        Product product = productSellDtoToProduct.getValue();
 
-                    return outboundGoodService.createOutboundGood(outboundDocument, productSellDto, product);
-                }
-        ).toList();
+                                        return outboundGoodService.createOutboundGood(outboundDocument, productSellDto,
+                                                        product);
+                                }).toList();
 
-        outboundDocument.setOutboundGoods(outboundGoods);
+                outboundDocument.setOutboundGoods(outboundGoods);
 
-        log.info(
-                "Outbound document created with document number: {} and externalId: {}",
-                outboundDocument.getDocumentNumber(),
-                outboundDocument.getExternalId()
-        );
+                log.info(
+                                "Outbound document created with document number: {} and externalId: {}",
+                                outboundDocument.getDocumentNumber(),
+                                outboundDocument.getExternalId());
 
-        return outboundDocument;
-    }
+                return outboundDocument;
+        }
 }

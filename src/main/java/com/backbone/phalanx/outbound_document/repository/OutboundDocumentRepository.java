@@ -11,4 +11,8 @@ public interface OutboundDocumentRepository
         extends JpaRepository<OutboundDocument, Long>, JpaSpecificationExecutor<OutboundDocument> {
 
     List<OutboundDocument> findAllByCreatedAtBetween(LocalDateTime from, LocalDateTime to);
+
+    java.util.Optional<OutboundDocument> findByExternalId(String externalId);
+
+    java.util.Optional<OutboundDocument> findByDocumentNumber(String documentNumber);
 }

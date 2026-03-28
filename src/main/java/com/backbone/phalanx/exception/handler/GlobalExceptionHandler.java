@@ -77,24 +77,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentials(BadCredentialsException exception) {
         logException(exception);
-        return ResponseEntity.
-                status(HttpStatus.UNAUTHORIZED)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(Map.of("error", "Неверные учетные данные"));
     }
 
     @ExceptionHandler(ReportGenerationException.class)
     public ResponseEntity<?> handleReportGeneration(ReportGenerationException exception) {
         logException(exception);
-        return ResponseEntity.
-                status(HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("error", exception.getMessage()));
     }
 
     @ExceptionHandler(StockFrozenException.class)
     public ResponseEntity<?> handleStockFrozen(StockFrozenException exception) {
         logException(exception);
-        return ResponseEntity.
-                status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", exception.getMessage()));
+    }
+
+    @ExceptionHandler(ReturnQuantityExceededException.class)
+    public ResponseEntity<?> handleReturnQuantityExceeded(ReturnQuantityExceededException exception) {
+        logException(exception);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("error", exception.getMessage()));
     }
 
