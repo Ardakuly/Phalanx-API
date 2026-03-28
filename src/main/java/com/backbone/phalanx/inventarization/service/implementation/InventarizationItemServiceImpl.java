@@ -1,7 +1,8 @@
-package com.backbone.phalanx.inventarization.service;
+package com.backbone.phalanx.inventarization.service.implementation;
 
 import com.backbone.phalanx.inventarization.model.InventarizationItem;
 import com.backbone.phalanx.inventarization.repository.InventarizationItemRepository;
+import com.backbone.phalanx.inventarization.service.InventarizationItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

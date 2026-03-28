@@ -8,7 +8,7 @@ import com.backbone.phalanx.inventarization.model.InventarizationItem;
 import com.backbone.phalanx.inventarization.model.InventarizationStatus;
 import com.backbone.phalanx.inventarization.repository.InventarizationRepository;
 import com.backbone.phalanx.inventarization.service.InventarizationItemService;
-import com.backbone.phalanx.inventarization.service.InventarizationServiceImpl;
+import com.backbone.phalanx.inventarization.service.implementation.InventarizationServiceImpl;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,7 +32,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

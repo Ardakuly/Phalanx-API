@@ -1,4 +1,4 @@
-package com.backbone.phalanx.inventarization.service;
+package com.backbone.phalanx.inventarization.service.implementation;
 
 import com.backbone.phalanx.inventarization.dto.CountRequestDto;
 
@@ -8,6 +8,8 @@ import com.backbone.phalanx.inventarization.model.InventarizationItem;
 import com.backbone.phalanx.inventarization.model.InventarizationStatus;
 import com.backbone.phalanx.inventarization.repository.InventarizationRepository;
 import com.backbone.phalanx.inventarization.mapper.InventarizationMapper;
+import com.backbone.phalanx.inventarization.service.InventarizationItemService;
+import com.backbone.phalanx.inventarization.service.InventarizationService;
 import com.backbone.phalanx.product.model.Product;
 import com.backbone.phalanx.product.service.ProductService;
 import com.backbone.phalanx.authentication.util.SecurityUtils;
