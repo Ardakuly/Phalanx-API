@@ -13,5 +13,6 @@ public record OutboundDocumentFilterRequestDto(
                 LocalDateTime createdFrom,
                 LocalDateTime createdTo,
                 String sortBy,
-                String sortDirection) {
+                String sortDirection
+) {
 }

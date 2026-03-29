@@ -1,5 +1,6 @@
 package com.backbone.phalanx.receipt.listener;
 
+import com.backbone.phalanx.receipt.model.ReturnCompletedEvent;
 import com.backbone.phalanx.receipt.model.SaleCompletedEvent;
 import com.backbone.phalanx.receipt.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,18 @@ public class ReceiptEventListener {
                     "Failed to trigger receipt printing for document: {}",
                     event.getOutboundDocument().getDocumentNumber(),
                     exception);
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleReturnCompletedEvent(ReturnCompletedEvent event) {
+        log.info("Return transaction committed. Initiating return receipt printing for document: {}", 
+                event.getGoodReturnDocument().getDocumentNumber());
+        try {
+            receiptService.printReturnReceipt(event.getGoodReturnDocument());
+        } catch (Exception e) {
+            log.error("Failed to trigger return receipt printing for document: {}", 
+                    event.getGoodReturnDocument().getDocumentNumber(), e);
         }
     }
 }

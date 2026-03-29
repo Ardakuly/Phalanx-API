@@ -36,7 +36,7 @@ public class OutboundDocumentController {
     @PostMapping("/sell")
     @Operation(summary = "Sell products", description = "Post request to sell products")
     public ResponseEntity<OutboundDocument> sell(
-            OutboundDocumentDto outboundDocumentDto,
+            @RequestBody OutboundDocumentDto outboundDocumentDto,
             Authentication authentication
     ) {
         OutboundDocument outboundDocument = outboundDocumentService.createOutboundDocument(

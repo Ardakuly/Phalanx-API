@@ -1,5 +1,7 @@
 package com.backbone.phalanx.receipt.service.implementation;
 
+import com.backbone.phalanx.good_return_document.model.GoodReturnDocument;
+import com.backbone.phalanx.good_return_document.model.ReturnedGood;
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import com.backbone.phalanx.outbound_document.model.OutboundGood;
 import com.backbone.phalanx.receipt.configuration.PrinterConfig;
@@ -83,6 +85,64 @@ public class ReceiptServiceImpl implements ReceiptService {
 
         } catch (IOException e) {
             log.error("Failed to print receipt for document: {}", document.getDocumentNumber(), e);
+        }
+    }
+
+    @Override
+    @Async
+    public void printReturnReceipt(GoodReturnDocument document) {
+        PrintService printService = findPrintService(printerConfig.getName());
+        if (printService == null) {
+            log.warn("No suitable printer found. Skipping printing.");
+            return;
+        }
+
+        try (PrinterOutputStream outputStream = new PrinterOutputStream(printService);
+             EscPos escpos = new EscPos(outputStream)) {
+
+            escpos.setCharacterCodeTable(EscPos.CharacterCodeTable.CP866_Cyrillic_2);
+
+            Style titleStyle = new Style()
+                    .setFontSize(Style.FontSize._2, Style.FontSize._2)
+                    .setJustification(EscPosConst.Justification.Center)
+                    .setBold(true);
+
+            Style subtitleStyle = new Style()
+                    .setJustification(EscPosConst.Justification.Center);
+
+            Style boldStyle = new Style().setBold(true);
+
+            // Header
+            escpos.writeLF(titleStyle, "PHALANX POS");
+            escpos.writeLF(subtitleStyle, "ВОЗВРАТ ТОВАРА");
+            escpos.writeLF("--------------------------------");
+            escpos.writeLF("Возврат No: " + document.getDocumentNumber());
+            escpos.writeLF("Чек No:     " + document.getOutboundDocument().getDocumentNumber());
+            escpos.writeLF("Дата:       " + document.getCreatedAt().format(FORMATTER));
+            escpos.writeLF("Продавец:   " + document.getOutboundDocument().getSeller().getFullName());
+            escpos.writeLF("--------------------------------");
+
+            // Items
+            for (ReturnedGood good : document.getReturnedGoods()) {
+                String itemName = good.getName();
+                BigDecimal qty = good.getQuantity();
+                BigDecimal price = good.getSellingPrice();
+                BigDecimal subTotal = price.multiply(qty);
+
+                escpos.writeLF(itemName);
+                escpos.writeLF(String.format("  %s x %s = %s", qty, price, subTotal));
+            }
+
+            escpos.writeLF("--------------------------------");
+            escpos.writeLF(boldStyle, String.format("СУММА ВОЗВРАТА: %s", document.getRefundAmount()));
+            escpos.writeLF("--------------------------------");
+            escpos.feed(3);
+            escpos.cut(EscPos.CutMode.FULL);
+
+            log.info("Return receipt printed successfully for document: {}", document.getDocumentNumber());
+
+        } catch (IOException e) {
+            log.error("Failed to print return receipt for document: {}", document.getDocumentNumber(), e);
         }
     }
 

@@ -72,10 +72,12 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
         @Override
         @Transactional(propagation = REQUIRES_NEW)
         public OutboundDocument createOutboundDocument(
-                        OutboundDocumentDto outboundDocumentDto, String sellerEmail) {
+                        OutboundDocumentDto outboundDocumentDto, String sellerEmail
+        ) {
 
                 Map<ProductSellDto, Product> productSellDtoToProducts = outboundDocumentDto.products().stream().map(
-                                productService::sell).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                                productService::sell
+                ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
                 OutboundDocument outboundDocument = outboundDocumentRepository.save(
                                 OutboundDocument.builder()
