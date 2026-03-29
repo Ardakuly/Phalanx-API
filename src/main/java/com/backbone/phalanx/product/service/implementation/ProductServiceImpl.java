@@ -230,6 +230,22 @@ public class ProductServiceImpl implements ProductService {
         productRepository.save(product);
     }
 
+    @Override
+    public Product findEntityByBarcode(String barcode) {
+        return productRepository.findByBarcode(barcode)
+                .orElseThrow(() -> new ProductNotFoundException(barcode));
+    }
+
+    @Override
+    @Transactional
+    public void increaseStock(String barcode, BigDecimal quantity) {
+        validateStockNotFrozen();
+        Product product = findEntityByBarcode(barcode);
+        product.setStockBalance(product.getStockBalance().add(quantity));
+        product.setUpdatedAt(LocalDateTime.now());
+        productRepository.save(product);
+    }
+
     private void validateStockNotFrozen() {
         if (inventarizationRepository.existsByStatus(InventarizationStatus.IN_PROGRESS)) {
             throw new StockFrozenException();

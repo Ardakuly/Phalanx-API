@@ -16,7 +16,8 @@ public class GoodReturnDocumentController {
 
     @PostMapping
     public ResponseEntity<GoodReturnDocumentResponseDto> createGoodReturnDocument(
-            @RequestBody GoodReturnDocumentRequestDto request) {
+            @RequestBody GoodReturnDocumentRequestDto request
+    ) {
         return ResponseEntity.ok(goodReturnDocumentService.createGoodReturnDocument(request));
     }
 }

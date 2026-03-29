@@ -3,6 +3,7 @@ package com.backbone.phalanx.product.service;
 import com.backbone.phalanx.product.dto.*;
 import com.backbone.phalanx.product.model.Product;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,7 @@ public interface ProductService {
      * @param threshold the maximum stock balance to filter by (inclusive)
      * @return a list of ProductResponseDto for products meeting the criteria
      */
-    List<ProductResponseDto> getLowStockProducts(java.math.BigDecimal threshold);
+    List<ProductResponseDto> getLowStockProducts(BigDecimal threshold);
 
     /**
      * Retrieves all product entities.
@@ -108,5 +109,23 @@ public interface ProductService {
      * @param productId the internal ID of the product
      * @param newStock the new stock balance
      */
-    void updateProductStock(Long productId, java.math.BigDecimal newStock);
+    void updateProductStock(Long productId, BigDecimal newStock);
+
+    /**
+     * Finds a product entity by its barcode.
+     *
+     * @param barcode the unique identifier of the product in barcode format
+     * @return the found Product entity
+     * @throws com.backbone.phalanx.exception.ProductNotFoundException if the product is not found
+     */
+    Product findEntityByBarcode(String barcode);
+
+    /**
+     * Increases the stock balance of a product identified by its barcode.
+     *
+     * @param barcode the unique identifier of the product in barcode format
+     * @param quantity the quantity to add to the stock balance
+     * @throws com.backbone.phalanx.exception.ProductNotFoundException if the product is not found
+     */
+    void increaseStock(String barcode, BigDecimal quantity);
 }

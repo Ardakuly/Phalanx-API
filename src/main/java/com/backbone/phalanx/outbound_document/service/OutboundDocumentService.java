@@ -38,4 +38,13 @@ public interface OutboundDocumentService {
      *         including seller information and associated products.
      */
     OutboundDocument createOutboundDocument(OutboundDocumentDto outboundDocumentDto, String sellerEmail);
+
+    /**
+     * Finds an outbound document by its unique document number.
+     *
+     * @param documentNumber the document number to search for
+     * @return the found OutboundDocument entity
+     * @throws RuntimeException if the document is not found
+     */
+    OutboundDocument findByDocumentNumber(String documentNumber);
 }

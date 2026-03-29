@@ -5,6 +5,6 @@ import com.backbone.phalanx.report.model.ReportType;
 public class ReportGenerationException extends RuntimeException {
 
     ReportGenerationException(ReportType reportType) {
-        super("Error generating report of type: " + reportType + ".");
+        super("Ошибка при создания отчета по: " + reportType + ".");
     }
 }

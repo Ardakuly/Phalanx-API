@@ -107,4 +107,11 @@ public class OutboundDocumentServiceImpl implements OutboundDocumentService {
 
                 return outboundDocument;
         }
+
+        @Override
+        @Transactional(readOnly = true)
+        public OutboundDocument findByDocumentNumber(String documentNumber) {
+                return outboundDocumentRepository.findByDocumentNumber(documentNumber)
+                                .orElseThrow(() -> new RuntimeException("Outbound Document not found: " + documentNumber));
+        }
 }

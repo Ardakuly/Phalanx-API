@@ -9,13 +9,12 @@ import com.backbone.phalanx.good_return_document.mapper.GoodReturnDocumentMapper
 import com.backbone.phalanx.good_return_document.model.GoodReturnDocument;
 import com.backbone.phalanx.good_return_document.model.ReturnedGood;
 import com.backbone.phalanx.good_return_document.repository.GoodReturnDocumentRepository;
-import com.backbone.phalanx.good_return_document.repository.ReturnedGoodRepository;
 import com.backbone.phalanx.good_return_document.service.GoodReturnDocumentService;
+import com.backbone.phalanx.good_return_document.service.ReturnedGoodService;
 import com.backbone.phalanx.outbound_document.model.OutboundDocument;
 import com.backbone.phalanx.outbound_document.model.OutboundGood;
-import com.backbone.phalanx.outbound_document.repository.OutboundDocumentRepository;
-import com.backbone.phalanx.product.model.Product;
-import com.backbone.phalanx.product.repository.ProductRepository;
+import com.backbone.phalanx.outbound_document.service.OutboundDocumentService;
+import com.backbone.phalanx.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,9 +32,9 @@ import java.util.UUID;
 public class GoodReturnDocumentServiceImpl implements GoodReturnDocumentService {
 
         private final GoodReturnDocumentRepository goodReturnDocumentRepository;
-        private final ReturnedGoodRepository returnedGoodRepository;
-        private final OutboundDocumentRepository outboundDocumentRepository;
-        private final ProductRepository productRepository;
+        private final ReturnedGoodService returnedGoodService;
+        private final OutboundDocumentService outboundDocumentService;
+        private final ProductService productService;
         private final GoodReturnDocumentMapper goodReturnDocumentMapper;
 
         @Override
@@ -45,10 +44,8 @@ public class GoodReturnDocumentServiceImpl implements GoodReturnDocumentService 
                 log.info("Creating Good Return Document for Outbound Document: {}",
                                 request.outboundDocumentNumber());
 
-                OutboundDocument outboundDocument = outboundDocumentRepository
-                                .findByDocumentNumber(request.outboundDocumentNumber())
-                                .orElseThrow(() -> new RuntimeException("Outbound Document not found: "
-                                                + request.outboundDocumentNumber()));
+                OutboundDocument outboundDocument = outboundDocumentService
+                                .findByDocumentNumber(request.outboundDocumentNumber());
 
                 GoodReturnDocument goodReturnDocument = GoodReturnDocument.builder()
                                 .externalId(UUID.randomUUID().toString())
@@ -70,11 +67,8 @@ public class GoodReturnDocumentServiceImpl implements GoodReturnDocumentService 
                                         .orElseThrow(() -> new ProductNotFoundException(goodRequest.barcode()));
 
                         // Calculate already returned quantity
-                        List<ReturnedGood> previouslyReturned = returnedGoodRepository
-                                        .findAllByOutboundGoodId(outboundGood.getId());
-                        BigDecimal alreadyReturnedQuantity = previouslyReturned.stream()
-                                        .map(ReturnedGood::getQuantity)
-                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                        BigDecimal alreadyReturnedQuantity = returnedGoodService
+                                        .getAlreadyReturnedQuantity(outboundGood.getId());
 
                         if (alreadyReturnedQuantity.add(goodRequest.quantity())
                                         .compareTo(outboundGood.getQuantity()) > 0) {
@@ -100,11 +94,7 @@ public class GoodReturnDocumentServiceImpl implements GoodReturnDocumentService 
                         returnedGoods.add(returnedGood);
 
                         // Update product stock
-                        Product product = productRepository.findByBarcode(outboundGood.getBarcode())
-                                        .orElseThrow(() -> new ProductNotFoundException(outboundGood.getBarcode()));
-                        product.setStockBalance(product.getStockBalance().add(goodRequest.quantity()));
-                        product.setUpdatedAt(LocalDateTime.now());
-                        productRepository.save(product);
+                        productService.increaseStock(outboundGood.getBarcode(), goodRequest.quantity());
 
                         // Calculate refund for this item
                         BigDecimal itemRefund = outboundGood.getSellingPrice().multiply(goodRequest.quantity());
