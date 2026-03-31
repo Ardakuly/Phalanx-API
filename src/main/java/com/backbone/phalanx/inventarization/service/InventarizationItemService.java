@@ -39,4 +39,12 @@ public interface InventarizationItemService {
      * @return list of inventarization items
      */
     List<InventarizationItem> findByInventarizationId(Long inventarizationId);
+
+    /**
+     * Find inventarization items by inventarization ids
+     * 
+     * @param inventarizationIds list of inventarization ids
+     * @return list of inventarization items
+     */
+    List<InventarizationItem> findByInventarizationIds(List<Long> inventarizationIds);
 }

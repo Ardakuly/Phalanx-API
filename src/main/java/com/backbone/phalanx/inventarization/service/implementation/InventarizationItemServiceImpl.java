@@ -34,4 +34,9 @@ public class InventarizationItemServiceImpl implements InventarizationItemServic
     public List<InventarizationItem> findByInventarizationId(Long inventarizationId) {
         return repository.findByInventarizationId(inventarizationId);
     }
+
+    @Override
+    public List<InventarizationItem> findByInventarizationIds(List<Long> inventarizationIds) {
+        return repository.findByInventarizationIdIn(inventarizationIds);
+    }
 }

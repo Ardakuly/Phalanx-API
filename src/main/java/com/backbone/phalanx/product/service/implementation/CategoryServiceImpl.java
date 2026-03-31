@@ -1,6 +1,5 @@
 package com.backbone.phalanx.product.service.implementation;
 
-import com.backbone.phalanx.exception.CategoryAlreadyExistsException;
 import com.backbone.phalanx.product.model.Category;
 import com.backbone.phalanx.product.repository.CategoryRepository;
 import com.backbone.phalanx.product.service.CategoryService;

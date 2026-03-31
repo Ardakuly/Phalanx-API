@@ -23,6 +23,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.backbone.phalanx.inventarization.dto.InventarizationFilterRequestDto;
 import com.backbone.phalanx.inventarization.dto.InventarizationFilterResponseDto;
@@ -52,8 +54,18 @@ public class InventarizationServiceImpl implements InventarizationService {
 
         Page<Inventarization> pageResult = inventarizationRepository.findAll(spec, pageable);
 
+        List<Long> inventarizationIds = pageResult.getContent().stream()
+                .map(Inventarization::getId)
+                .toList();
+
+        Map<Long, List<InventarizationItem>> itemsByInventarizationId = inventarizationItemService
+                .findByInventarizationIds(inventarizationIds).stream()
+                .collect(Collectors.groupingBy(item -> item.getInventarization().getId()));
+
         List<InventarizationResponseDto> content = pageResult.getContent().stream()
-                .map(inventarization -> inventarizationMapper.toDto(inventarization, Collections.emptyList()))
+                .map(inventarization -> inventarizationMapper.toDto(
+                        inventarization,
+                        itemsByInventarizationId.getOrDefault(inventarization.getId(), Collections.emptyList())))
                 .toList();
 
         return new InventarizationFilterResponseDto(

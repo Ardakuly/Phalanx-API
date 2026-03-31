@@ -15,5 +15,6 @@ public record InventarizationFilterRequestDto(
         LocalDateTime completedFrom,
         LocalDateTime completedTo,
         String sortBy,
-        String sortDirection) {
+        String sortDirection
+) {
 }

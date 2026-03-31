@@ -12,6 +12,8 @@ public interface InventarizationItemRepository extends JpaRepository<Inventariza
 
     List<InventarizationItem> findByInventarizationId(Long inventarizationId);
 
+    List<InventarizationItem> findByInventarizationIdIn(List<Long> inventarizationIds);
+
     Optional<InventarizationItem> findByInventarizationIdAndProductId(Long inventarizationId, Long productId);
 
     List<InventarizationItem> findByInventarizationIdAndDifferenceNot(Long inventarizationId,
