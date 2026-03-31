@@ -1,6 +1,8 @@
 package com.backbone.phalanx.inventarization.controller;
 
 import com.backbone.phalanx.inventarization.dto.CountRequestDto;
+import com.backbone.phalanx.inventarization.dto.InventarizationFilterRequestDto;
+import com.backbone.phalanx.inventarization.dto.InventarizationFilterResponseDto;
 import com.backbone.phalanx.inventarization.dto.InventarizationResponseDto;
 import com.backbone.phalanx.inventarization.service.InventarizationService;
 import jakarta.validation.Valid;
@@ -14,6 +16,12 @@ import org.springframework.web.bind.annotation.*;
 public class InventarizationController {
 
     private final InventarizationService inventarizationService;
+
+    @PostMapping
+    public ResponseEntity<InventarizationFilterResponseDto> getFiltered(
+            @RequestBody InventarizationFilterRequestDto filter) {
+        return ResponseEntity.ok(inventarizationService.getFiltered(filter));
+    }
 
     @PostMapping("/start")
     public ResponseEntity<InventarizationResponseDto> start() {

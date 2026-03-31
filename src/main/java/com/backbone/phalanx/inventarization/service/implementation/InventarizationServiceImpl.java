@@ -21,7 +21,17 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+
+import com.backbone.phalanx.inventarization.dto.InventarizationFilterRequestDto;
+import com.backbone.phalanx.inventarization.dto.InventarizationFilterResponseDto;
+import com.backbone.phalanx.specification.InventarizationSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +42,26 @@ public class InventarizationServiceImpl implements InventarizationService {
     private final InventarizationItemService inventarizationItemService;
     private final ProductService productService;
     private final InventarizationMapper inventarizationMapper;
+
+    @Override
+    public InventarizationFilterResponseDto getFiltered(InventarizationFilterRequestDto filter) {
+
+        Sort sort = InventarizationSpecification.getSort(filter.sortBy(), filter.sortDirection());
+        Pageable pageable = PageRequest.of(filter.page(), filter.pageSize(), sort);
+        Specification<Inventarization> spec = InventarizationSpecification.filterBy(filter);
+
+        Page<Inventarization> pageResult = inventarizationRepository.findAll(spec, pageable);
+
+        List<InventarizationResponseDto> content = pageResult.getContent().stream()
+                .map(inventarization -> inventarizationMapper.toDto(inventarization, Collections.emptyList()))
+                .toList();
+
+        return new InventarizationFilterResponseDto(
+                pageResult.getTotalPages(),
+                (int) pageResult.getTotalElements(),
+                filter.page(),
+                content);
+    }
 
     @Override
     @Transactional
