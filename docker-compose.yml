@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - phalanx-volume:/var/lib/postgresql/data
+    networks:
+      - shared-network
 
   phalanx-backend:
     build:
@@ -26,6 +28,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: admin
     depends_on:
       - phalanx-db
+    networks:
+      - shared-network
 
 volumes:
   phalanx-volume:
+
+networks:
+  shared-network:
+    name: phalanx-shared-network # We give it an explicit name
+    driver: bridge
