@@ -25,7 +25,7 @@ public class InboundDocumentController {
     private final InboundDocumentService inboundDocumentService;
 
     @PostMapping("/add")
-    @Operation(summary = "", description = "Post request to add the product")
+    @Operation(summary = "Add inbound document", description = "Post request to create an inbound document using a list of products")
     public ResponseEntity<InboundDocument> add(@RequestBody List<ProductRequestDto> productRequestDto) {
         InboundDocument inboundDocument = inboundDocumentService.creatInboundDocument(productRequestDto);
         return ResponseEntity.ok().body(inboundDocument);

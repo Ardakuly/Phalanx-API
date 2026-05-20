@@ -1,6 +1,7 @@
 package com.backbone.phalanx.authentication.controller;
 
 import com.backbone.phalanx.authentication.service.EmailVerificationService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ public class EmailVerificationController {
     private final EmailVerificationService emailVerificationService;
 
     @PostMapping(value = "/verify")
+    @Operation(summary = "Verify Email", description = "Verifies a user's email using a provided token")
     public ResponseEntity<String> verifyEmail(String token) {
         return new ResponseEntity<>(emailVerificationService.verifyEmail(token), HttpStatus.OK);
     }
