@@ -16,10 +16,13 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -77,12 +80,19 @@ public class ReportSalesForMonthGenerator implements ReportGenerator {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
 
-        String fontPath = Objects.requireNonNull(
-                getClass().getResource("/fonts/DejaVuSans.ttf")
-        ).getPath();
+        File tempFontFile = File.createTempFile("DejaVuSans", ".ttf");
+
+        tempFontFile.deleteOnExit();
+
+        try (InputStream is = getClass().getResourceAsStream("/fonts/DejaVuSans.ttf")) {
+            if (is == null) {
+                throw new IOException("Font resource not found: /fonts/DejaVuSans.ttf");
+            }
+            Files.copy(is, tempFontFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
 
         renderer.getFontResolver().addFont(
-                fontPath,
+                tempFontFile.getAbsolutePath(),
                 BaseFont.IDENTITY_H,
                 BaseFont.EMBEDDED
         );
