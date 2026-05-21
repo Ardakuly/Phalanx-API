@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.backbone.phalanx.inbound_document.dto.InboundDocumentFilterRequestDto;
+import com.backbone.phalanx.inbound_document.dto.InboundDocumentFilterResponseDto;
 
 import java.util.List;
 
@@ -29,5 +31,12 @@ public class InboundDocumentController {
     public ResponseEntity<InboundDocument> add(@RequestBody List<ProductRequestDto> productRequestDto) {
         InboundDocument inboundDocument = inboundDocumentService.creatInboundDocument(productRequestDto);
         return ResponseEntity.ok().body(inboundDocument);
+    }
+
+    @PostMapping("/search")
+    @Operation(summary = "Retrieve all inbound documents", description = "Post request to retrieve all inbound documents with pagination and filtering")
+    public InboundDocumentFilterResponseDto getAllInboundDocumentsByFiltering(
+            @RequestBody InboundDocumentFilterRequestDto inboundDocumentFilterRequestDto) {
+        return inboundDocumentService.getAllInboundDocumentsByFiltering(inboundDocumentFilterRequestDto);
     }
 }
