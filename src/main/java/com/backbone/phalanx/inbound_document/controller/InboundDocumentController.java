@@ -28,14 +28,20 @@ public class InboundDocumentController {
     private final InboundGoodService inboundGoodService;
 
     @PostMapping("/add")
-    @Operation(summary = "Add inbound document", description = "Post request to create an inbound document using a list of products")
+    @Operation(
+            summary = "Add inbound document",
+            description = "Post request to create an inbound document using a list of products"
+    )
     public ResponseEntity<InboundDocument> add(@RequestBody List<ProductRequestDto> productRequestDto) {
         InboundDocument inboundDocument = inboundDocumentService.creatInboundDocument(productRequestDto);
         return ResponseEntity.ok().body(inboundDocument);
     }
 
     @PostMapping("/search")
-    @Operation(summary = "Retrieve all inbound documents", description = "Post request to retrieve all inbound documents with pagination and filtering")
+    @Operation(
+            summary = "Retrieve all inbound documents",
+            description = "Post request to retrieve all inbound documents with pagination and filtering"
+    )
     public InboundDocumentFilterResponseDto getAllInboundDocumentsByFiltering(
             @RequestBody InboundDocumentFilterRequestDto inboundDocumentFilterRequestDto) {
         return inboundDocumentService.getAllInboundDocumentsByFiltering(inboundDocumentFilterRequestDto);
@@ -43,10 +49,21 @@ public class InboundDocumentController {
 
     @PutMapping("/update")
     @Operation(
-            summary = "Update an inbound document good", description = "Updates an inbound good and recalculates product totals"
+            summary = "Update an inbound document good",
+            description = "Updates an inbound good and recalculates product totals"
     )
     public ResponseEntity<InboundGoodResponseDto> updateGood(@RequestBody InboundGoodUpdateRequestDto request) {
         InboundGoodResponseDto response = inboundGoodService.updateInboundGood(request);
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/good/{externalId}")
+    @Operation(
+            summary = "Delete an inbound document good",
+            description = "Deletes an inbound good and reverts its effect on product totals"
+    )
+    public ResponseEntity<Void> deleteGood(@PathVariable("externalId") String externalId) {
+        inboundGoodService.deleteInboundGood(externalId);
+        return ResponseEntity.ok().build();
     }
 }

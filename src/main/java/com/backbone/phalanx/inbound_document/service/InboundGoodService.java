@@ -26,4 +26,11 @@ public interface InboundGoodService {
      * @return the updated InboundGood dto
      */
     InboundGoodResponseDto updateInboundGood(InboundGoodUpdateRequestDto request);
+
+    /**
+     * Deletes an existing InboundGood and reverts its effect on the associated Product's total and stock.
+     *
+     * @param externalId the external id of the inbound good to be deleted
+     */
+    void deleteInboundGood(String externalId);
 }

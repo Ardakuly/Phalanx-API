@@ -108,4 +108,33 @@ public class InboundGoodServiceImpl implements InboundGoodService {
 
         return inboundDocumentMapper.toGoodDto(savedInboundGood);
     }
+
+    @Override
+    @Transactional
+    public void deleteInboundGood(String externalId) {
+        InboundGood inboundGood = inboundGoodRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new IllegalArgumentException("Inbound good not found with external id: " + externalId));
+
+        Product product = productRepository.findByBarcode(inboundGood.getBarcode())
+                .orElseThrow(() -> new IllegalArgumentException("Product not found with barcode: " + inboundGood.getBarcode()));
+
+        // Revert inbound good's effect on the product
+        BigDecimal currentTotal = product.getPurchasedPrice().multiply(product.getStockBalance());
+        BigDecimal oldGoodEffect = inboundGood.getPurchasedPrice().multiply(inboundGood.getQuantity());
+
+        BigDecimal totalWithoutOld = currentTotal.subtract(oldGoodEffect);
+        BigDecimal stockWithoutOld = product.getStockBalance().subtract(inboundGood.getQuantity());
+
+        product.setStockBalance(stockWithoutOld);
+        if (stockWithoutOld.compareTo(BigDecimal.ZERO) <= 0) {
+            product.setPurchasedPrice(BigDecimal.ZERO);
+        } else {
+            product.setPurchasedPrice(totalWithoutOld.divide(stockWithoutOld, 2, RoundingMode.HALF_UP));
+        }
+        product.setUpdatedAt(java.time.LocalDateTime.now());
+        productRepository.save(product);
+
+        inboundGoodRepository.delete(inboundGood);
+        log.info("Deleted InboundGood with externalId: {}", externalId);
+    }
 }
