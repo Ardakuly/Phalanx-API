@@ -6,7 +6,6 @@ import com.backbone.phalanx.product.model.Product;
 
 import com.backbone.phalanx.inbound_document.dto.InboundGoodUpdateRequestDto;
 import com.backbone.phalanx.inbound_document.dto.InboundGoodResponseDto;
-import com.backbone.phalanx.product.model.Product;
 
 public interface InboundGoodService {
 

@@ -13,6 +13,7 @@ import com.backbone.phalanx.product.service.CategoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import com.backbone.phalanx.exception.ProductStockBalanceNotSufficientException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -64,17 +65,22 @@ public class InboundGoodServiceImpl implements InboundGoodService {
         BigDecimal newQuantity = request.quantity() != null ? request.quantity() : inboundGood.getQuantity();
         BigDecimal newSellingPrice = request.sellingPrice() != null ? request.sellingPrice() : inboundGood.getSellingPrice();
 
+        BigDecimal stockWithoutOld = product.getStockBalance().subtract(inboundGood.getQuantity());
+        BigDecimal newStock = stockWithoutOld.add(newQuantity);
+
+        if (newStock.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ProductStockBalanceNotSufficientException(product.getName());
+        }
+
         // Revert old inbound good's effect on the product
         BigDecimal currentTotal = product.getPurchasedPrice().multiply(product.getStockBalance());
         BigDecimal oldGoodEffect = inboundGood.getPurchasedPrice().multiply(inboundGood.getQuantity());
 
         BigDecimal totalWithoutOld = currentTotal.subtract(oldGoodEffect);
-        BigDecimal stockWithoutOld = product.getStockBalance().subtract(inboundGood.getQuantity());
 
         // Apply new inbound good's effect
         BigDecimal newGoodEffect = newPurchasedPrice.multiply(newQuantity);
         BigDecimal newTotal = totalWithoutOld.add(newGoodEffect);
-        BigDecimal newStock = stockWithoutOld.add(newQuantity);
 
         product.setStockBalance(newStock);
         if (newStock.compareTo(BigDecimal.ZERO) <= 0) {
@@ -119,11 +125,16 @@ public class InboundGoodServiceImpl implements InboundGoodService {
                 .orElseThrow(() -> new IllegalArgumentException("Product not found with barcode: " + inboundGood.getBarcode()));
 
         // Revert inbound good's effect on the product
+        BigDecimal stockWithoutOld = product.getStockBalance().subtract(inboundGood.getQuantity());
+
+        if (stockWithoutOld.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ProductStockBalanceNotSufficientException(product.getName());
+        }
+
         BigDecimal currentTotal = product.getPurchasedPrice().multiply(product.getStockBalance());
         BigDecimal oldGoodEffect = inboundGood.getPurchasedPrice().multiply(inboundGood.getQuantity());
 
         BigDecimal totalWithoutOld = currentTotal.subtract(oldGoodEffect);
-        BigDecimal stockWithoutOld = product.getStockBalance().subtract(inboundGood.getQuantity());
 
         product.setStockBalance(stockWithoutOld);
         if (stockWithoutOld.compareTo(BigDecimal.ZERO) <= 0) {
