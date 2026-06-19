@@ -55,7 +55,7 @@ services:
       /bin/sh -c "
       until /usr/bin/mc alias set myminio http://phalanx-minio:9000 admin adminpassword; do echo 'Waiting for MinIO...'; sleep 1; done;
       /usr/bin/mc mb myminio/product-images || true;
-      /usr/bin/mc anonymous set download myminio/product-images || true;
+      /usr/bin/mc anonymous set public myminio/product-images || true;
       exit 0;
       "
     networks:
